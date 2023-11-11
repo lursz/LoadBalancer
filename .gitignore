@@ -1,0 +1,17 @@
+.idea/
+.vscode/
+LoadBalancer/.vscode/
+LoadBalancer/.idea/
+*.txt
+LoadBalancer/input/
+# Build results
+LoadBalancer/[Dd]ebug/
+LoadBalancer/[Rr]elease/
+LoadBalancer/x64/
+LoadBalancer/[Bb]in/
+LoadBalancer/[Oo]bj/
+# build folder is nowadays used for build scripts and should not be ignored
+#build/
+
+# NuGet Packages
+*.nupkg
