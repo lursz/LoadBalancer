@@ -1,36 +1,35 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json;
 using Npgsql;
 
-namespace LoadBalancer.db
+namespace LoadBalancer.db;
+
+public class DBHandler
 {
-    public class DBHandler
+    public static List<DBInstance> DbInstances { get; set; }
+    private readonly string _connectionString;
+
+
+    public DBHandler(string connectionString)
     {
-        private string connectionString;
+        _connectionString = connectionString;
+    }
 
-        public DBHandler(string connectionString)
-        {
-            this.connectionString = connectionString;
-        }
+    private static void GetConnectionStringList()
+    {
+        var jsonContent = File.ReadAllText("db/db.json");
+        DbInstances = JsonSerializer.Deserialize<List<DBInstance>>(jsonContent) ?? throw new InvalidOperationException();
+        // return JsonSerializer.Deserialize<List<DBInstance>>(jsonContent) ?? throw new InvalidOperationException();
+    }
 
-        public void CreateTable()
-        {
-            using NpgsqlConnection? connection = new NpgsqlConnection(connectionString);
-            connection.Open();
-
-            using NpgsqlCommand? command = new NpgsqlCommand("CREATE TABLE users (id serial PRIMARY KEY, username VARCHAR (50) UNIQUE NOT NULL, password VARCHAR (50) NOT NULL, email VARCHAR (355) UNIQUE NOT NULL)", connection);
-            command.ExecuteNonQuery();
-        }
-
-        
-        public void gowno()
-        {
-        using NpgsqlConnection? connection = new NpgsqlConnection(connectionString: "Host=localhost;Port=5432;Username=user1;Password=password1;Database=database1");
+    public void CreateTable()
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
-        using NpgsqlCommand? command = new NpgsqlCommand("CREATE TABLE users3 (id serial PRIMARY KEY, username VARCHAR (50) UNIQUE NOT NULL, password VARCHAR (50) NOT NULL, email VARCHAR (355) UNIQUE NOT NULL)", connection);
+
+        using var command =
+            new NpgsqlCommand(
+                "CREATE TABLE notUsers (id serial PRIMARY KEY, username VARCHAR (50) UNIQUE NOT NULL, password VARCHAR (50) NOT NULL, email VARCHAR (355) UNIQUE NOT NULL)",
+                connection);
         command.ExecuteNonQuery();
-        }
     }
 }
