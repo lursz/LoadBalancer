@@ -10,9 +10,10 @@ public class Reader
     
     public Reader()
     {
+        InitializeConnectionStringList();
     }
 
-    public void GetConnectionStringList()
+    private void InitializeConnectionStringList()
     {
         var jsonContent = File.ReadAllText(_path);
         DBsConnectionStrings = JsonSerializer.Deserialize<List<DBInstance>>(jsonContent) ??
