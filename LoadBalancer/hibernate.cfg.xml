@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-configuration xmlns="urn:nhibernate-configuration-2.2">
+  <session-factory>
+    <!-- Database connection settings -->
+    <property name="connection.driver_class">NHibernate.Driver.SqlClientDriver</property>
+    <property name="connection.connection_string">Host=localhost;Port=5434;Username=user3;Password=password3;Database=database3</property>
+
+    <!-- Mapping file -->
+    <mapping assembly="YourAssemblyName" />
+  </session-factory>
+</hibernate-configuration>
