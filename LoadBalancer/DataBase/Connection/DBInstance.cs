@@ -1,4 +1,4 @@
-namespace LoadBalancer.db;
+namespace LoadBalancer.DataBase.Connection;
 
 public class DBInstance
 {

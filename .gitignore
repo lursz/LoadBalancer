@@ -3,7 +3,7 @@
 LoadBalancer/.vscode/
 LoadBalancer/.idea/
 *.txt
-LoadBalancer/db/db.json
+**/db.json
 # Build results
 LoadBalancer/[Dd]ebug/
 LoadBalancer/[Rr]elease/
