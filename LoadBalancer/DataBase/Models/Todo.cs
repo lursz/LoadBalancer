@@ -5,10 +5,11 @@ namespace LoadBalancer.DataBase.Models;
 
 public class Todo
 {
+    [Key]
     public int Id { get; set; }
 
     [Required] 
-    public string Task { get; set; }
+    public required string Title { get; set; }
 
     public string? Describtion { get; set; }
 
@@ -16,4 +17,5 @@ public class Todo
     public DateTime Deadline { get; set; }
 
     public bool Done { get; set; }
+    public User? User { get; set;}
 }

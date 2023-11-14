@@ -2,19 +2,19 @@ using System.Text.Json;
 
 namespace LoadBalancer.DataBase.Connection;
 
-public class Reader
+public static class Reader
 {
-    private readonly string _path = "DataBase/Connection/db.json";
-    public List<DBInstance>? DBsConnectionStrings { get; set; }
+    private static readonly string _path = "DataBase/Connection/db.json";
+    public static List<DBInstance>? DBsConnectionStrings { get; set; }
 
 
-    public Reader()
+    static Reader()
     {
         InitializeConnectionStringList();
     }
 
 
-    private void InitializeConnectionStringList()
+    private static void InitializeConnectionStringList()
     {
         var jsonContent = File.ReadAllText(_path);
         DBsConnectionStrings = JsonSerializer.Deserialize<List<DBInstance>>(jsonContent) ??
