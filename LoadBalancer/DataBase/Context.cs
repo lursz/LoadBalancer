@@ -27,11 +27,11 @@ public class Context : DbContext
         optionsBuilder.UseNpgsql(_connectionString);
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<User>().HasData(
-            new User { Id = 1, Name = "Joe", Email = "joe.doe@gmail.com", Sex = "Other" },
-            new User { Id = 2, Name = "Mary", Email = "mary.bruh@gmail.com", Sex = "Male" }
-        );
-    }
+    // protected override void OnModelCreating(ModelBuilder modelBuilder)
+    // {
+    //     modelBuilder.Entity<User>().HasData(
+    //         new User { Id = 1, Name = "Joe", Email = "joe.doe@gmail.com", Sex = "Other" },
+    //         new User { Id = 2, Name = "Mary", Email = "mary.bruh@gmail.com", Sex = "Male" }
+    //     );
+    // }
 }

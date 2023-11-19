@@ -6,6 +6,7 @@ namespace LoadBalancer.DataBase.Models;
 public class Todo
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
     [Required] 
