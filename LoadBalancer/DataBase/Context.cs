@@ -25,6 +25,7 @@ public class Context : DbContext
     {
         Console.WriteLine("OnConfiguring");
         optionsBuilder.UseNpgsql(_connectionString);
+        optionsBuilder.AddInterceptors(new TaggedQueryCommandInterceptor());
     }
 
     // protected override void OnModelCreating(ModelBuilder modelBuilder)
