@@ -17,15 +17,15 @@ public class Context : DbContext
         _connectionString = connectionString;
     }
 
-    public Context() 
-    {
+    public Context() {
+        
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         Console.WriteLine("OnConfiguring");
         optionsBuilder.UseNpgsql(_connectionString);
-        optionsBuilder.AddInterceptors(new EFCommandInterceptor());
+        optionsBuilder.AddInterceptors(new ReadLoadBalancerInterceptor());
     }
 
     // protected override void OnModelCreating(ModelBuilder modelBuilder)

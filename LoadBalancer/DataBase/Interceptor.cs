@@ -1,41 +1,40 @@
 
 
+using System.Data.Common;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-class EFCommandInterceptor : IDbCommandInterceptor
+
+class ReadLoadBalancerInterceptor : DbCommandInterceptor
 {
-    public void NonQueryExecuted(System.Data.Common.DbCommand command, DbCommandInterceptionContext<int> interceptionContext)
+    // private readonly string[] readConnectionStrings;
+
+    public ReadLoadBalancerInterceptor()
     {
-        LogInfo("NonQueryExecuted", String.Format(" IsAsync: {0}, Command Text: {1}", interceptionContext.IsAsync, command.CommandText));
+        // this.readConnectionStrings = readConnectionStrings;
     }
 
-    // public void NonQueryExecuting(System.Data.Common.DbCommand command, DbCommandInterceptionContext<int> interceptionContext)
-    // {
-    //     LogInfo("NonQueryExecuting", String.Format(" IsAsync: {0}, Command Text: {1}", interceptionContext.IsAsync,  command.CommandText));
-    // }
-
-    // public void ReaderExecuted(System.Data.Common.DbCommand command, DbCommandInterceptionContext<System.Data.Common.DbDataReader> interceptionContext)
-    // {
-    //     LogInfo("ReaderExecuted", String.Format(" IsAsync: {0}, Command Text: {1}", interceptionContext.IsAsync, command.CommandText));
-    // }
-
-    // public void ReaderExecuting(System.Data.Common.DbCommand command, DbCommandInterceptionContext<System.Data.Common.DbDataReader> interceptionContext)
-    // {
-    //     LogInfo("ReaderExecuting", String.Format(" IsAsync: {0}, Command Text: {1}", interceptionContext.IsAsync, command.CommandText));
-    // }
-
-    // public void ScalarExecuted(System.Data.Common.DbCommand command, DbCommandInterceptionContext<object> interceptionContext)
-    // {
-    //     LogInfo("ScalarExecuted", String.Format(" IsAsync: {0}, Command Text: {1}", interceptionContext.IsAsync, command.CommandText));
-    // }
-
-    // public void ScalarExecuting(System.Data.Common.DbCommand command, DbCommandInterceptionContext<object> interceptionContext)
-    // {
-    //     LogInfo("ScalarExecuting", String.Format(" IsAsync: {0}, Command Text: {1}", interceptionContext.IsAsync, command.CommandText));
-    // }
-
-    private void LogInfo(string command, string commandText)
+    public override InterceptionResult<DbDataReader> ReaderExecuting(
+        DbCommand command,
+        CommandEventData eventData,
+        InterceptionResult<DbDataReader> result)
     {
-        Console.WriteLine("Intercepted on: {0} :- {1} ", command, commandText);
+
+        // command.Connection!.ConnectionString = "Host=localhost;Port=5433;Username=user2;Password=password2;Database=database2";
+        command.Connection.ChangeDatabase("database2");
+        Console.WriteLine("Interceptor");
+        Console.WriteLine("command text: " + command.CommandText);
+        Console.WriteLine("connection string: " + command.Connection!.ConnectionString);
+
+        return result;
+    }
+}
+
+class ConnectionInterceptor : DbConnectionInterceptor
+{
+    public override void ConnectionOpened(DbConnection connection, ConnectionEndEventData eventData)
+    {
+        Console.WriteLine("Connection opened");
+        Console.WriteLine("connection string: " + connection.ConnectionString);
+       
     }
 }
