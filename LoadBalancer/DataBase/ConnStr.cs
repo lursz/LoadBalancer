@@ -1,17 +1,18 @@
 using System.Text.Json;
 
-namespace LoadBalancer.DataBase.Connection;
+namespace LoadBalancer.DataBase;
 
 public static class Reader
 {
     private static readonly string _path = "DataBase/Connection/db.json";
-    public static List<DbInstance>? DBsConnectionStrings { get; set; }
 
 
     static Reader()
     {
         InitializeConnectionStringList();
     }
+
+    public static List<DbInstance>? DBsConnectionStrings { get; set; }
 
 
     private static void InitializeConnectionStringList()
@@ -20,4 +21,10 @@ public static class Reader
         DBsConnectionStrings = JsonSerializer.Deserialize<List<DbInstance>>(jsonContent) ??
                                throw new InvalidOperationException();
     }
+}
+
+public class DbInstance
+{
+    public string Name { get; set; }
+    public string ConnectionString { get; set; }
 }
