@@ -10,7 +10,8 @@ public class SessionControl
 {
     public static void Register(IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        // var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = "Host=localhost;Port=5432;Username=user1;Password=password1;Database=database1";
         var sessionFactory = Fluently.Configure()
             .Database(MsSqlConfiguration.MsSql2012
                 .ConnectionString(connectionString))
