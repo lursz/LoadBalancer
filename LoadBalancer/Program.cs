@@ -7,19 +7,16 @@ internal static class Program
 {
     private static void Main(string[] args)
     {
-        using (var session = NHibernateHelper.OpenSession())
+        using var session = NHibernateHelper.OpenSession();
+        using var transaction = session.BeginTransaction();
+        var user = new User
         {
-            using (var transaction = session.BeginTransaction())
-            {
-                var user = new User
-                {
-                    Name = "John",
-                    Email = "john@example.com",
-                    Sex = "Male"
-                };
-                session.Save(user);
-                transaction.Commit();
-            }
-        }
+            Id = 1,
+            Name = "John",
+            Email = "john@example.com",
+            Sex = "Male"
+        };
+        session.Save(user);
+        transaction.Commit();
     }
 }

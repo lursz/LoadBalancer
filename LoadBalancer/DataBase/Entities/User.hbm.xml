@@ -1,7 +1,7 @@
 <hibernate-mapping>
     <class name="com.todo.entities.User" table="user">
         <id name="Id">
-            <generator class="assigned"/>
+            <generator class="native"/>
         </id>
         <property name="Name"/>
         <property name="Email"/>

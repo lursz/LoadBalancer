@@ -17,8 +17,8 @@ namespace LoadBalancer.DataBase
                     var configuration = new Configuration();
                     configuration.Configure();
                     _sessionFactory = configuration.BuildSessionFactory();
-                    var connString = Connection.Reader.DBsConnectionStrings?[0].ConnectionString;
-                    configuration.SetProperty("connection.connection_string", connString);
+                    // var connString = Connection.Reader.DBsConnectionStrings?[0].ConnectionString;
+                    // configuration.SetProperty("connection.connection_string", connString);
                 }
                 return _sessionFactory;
             }

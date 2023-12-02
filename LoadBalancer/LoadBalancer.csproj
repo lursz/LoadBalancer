@@ -13,4 +13,15 @@
         <PackageReference Include="NHibernate.NetCore" Version="8.0.0"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Include="hibernate.cfg.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="DataBase\Entities\Todo.hbm.xml" />
+      <EmbeddedResource Include="DataBase\Entities\Todo.hbm.xml" />
+      <None Remove="DataBase\Entities\User.hbm.xml" />
+      <EmbeddedResource Include="DataBase\Entities\User.hbm.xml" />
+      <None Remove="hibernate.cfg.xml" />
+    </ItemGroup>
+
 </Project>

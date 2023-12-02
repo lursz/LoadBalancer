@@ -2,7 +2,7 @@
     <class name="com.todo.entities.Todo" table="todo">
         <id name="Id">
             <column name="Id"/>
-            <generator class="assigned"/>
+            <generator class="native"/>
         </id>
         <property name="Title"/>
         <property name="Describtion"/>
