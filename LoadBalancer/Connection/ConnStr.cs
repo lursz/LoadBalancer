@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace LoadBalancer.DataBase;
+namespace LoadBalancer.Connection;
 
 public static class Reader
 {

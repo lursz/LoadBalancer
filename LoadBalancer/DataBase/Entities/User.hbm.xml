@@ -1,0 +1,11 @@
+<hibernate-mapping>
+    <class name="com.todo.entities.User" table="user">
+        <id name="Id">
+            <generator class="assigned"/>
+        </id>
+        <property name="Name"/>
+        <property name="Email"/>
+        <property name="Sex"/>
+        <property name="Todos"/>
+    </class>
+</hibernate-mapping>
