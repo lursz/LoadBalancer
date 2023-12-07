@@ -18,5 +18,13 @@ internal static class Program
         };
         session.Save(user);
         transaction.Commit();
+
+        // var users_query = session.CreateQuery("FROM User");
+        // var users = users_query.List<User>();
+        // Console.WriteLine("\nwynik zapytania: ");
+        // foreach (var u in users)
+        // {
+        //     Console.WriteLine(u.Id.ToString() + " " + u.Name + " " + u.Email + " " + u.Sex);
+        // }
     }
 }

@@ -1,11 +1,14 @@
-<hibernate-mapping>
-    <class name="com.todo.entities.User" table="user">
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="LoadBalancer">
+    <class name="LoadBalancer.DataBase.Entities.User" table="users">
         <id name="Id">
             <generator class="native"/>
         </id>
         <property name="Name"/>
         <property name="Email"/>
         <property name="Sex"/>
-        <property name="Todos"/>
+        <bag name="Todos" inverse="true" cascade="all-delete-orphan">
+            <key column="UserId"/>
+            <one-to-many class="LoadBalancer.DataBase.Entities.Todo"/>
+        </bag>
     </class>
 </hibernate-mapping>

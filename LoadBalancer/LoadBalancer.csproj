@@ -4,7 +4,7 @@
         <OutputType>Exe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <Nullable>disable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,11 +17,13 @@
       <EmbeddedResource Include="hibernate.cfg.xml">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
-      <None Remove="DataBase\Entities\Todo.hbm.xml" />
-      <EmbeddedResource Include="DataBase\Entities\Todo.hbm.xml" />
-      <None Remove="DataBase\Entities\User.hbm.xml" />
-      <EmbeddedResource Include="DataBase\Entities\User.hbm.xml" />
       <None Remove="hibernate.cfg.xml" />
+
+      <EmbeddedResource Include="DataBase\Entities\User.hbm.xml" />
+      <None Remove="DataBase\Entities\User.hbm.xml" />
+
+      <EmbeddedResource Include="DataBase\Entities\Todo.hbm.xml" />
+      <None Remove="DataBase\Entities\Todo.hbm.xml" />
     </ItemGroup>
 
 </Project>
