@@ -1,20 +1,29 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <Nullable>disable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.13">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Npgsql" Version="7.0.6"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
+        <PackageReference Include="NHibernate" Version="5.4.7" />
+        <PackageReference Include="NHibernate.Extensions.NpgSql" Version="8.0.0" />
+        <PackageReference Include="NHibernate.NetCore" Version="8.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="hibernate.cfg.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="hibernate.cfg.xml" />
+
+      <EmbeddedResource Include="DataBase\Entities\User.hbm.xml" />
+      <None Remove="DataBase\Entities\User.hbm.xml" />
+
+      <EmbeddedResource Include="DataBase\Entities\Todo.hbm.xml" />
+      <None Remove="DataBase\Entities\Todo.hbm.xml" />
     </ItemGroup>
 
 </Project>

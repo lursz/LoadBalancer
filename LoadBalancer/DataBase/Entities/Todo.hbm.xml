@@ -1,0 +1,13 @@
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="LoadBalancer">
+    <class name="LoadBalancer.DataBase.Entities.Todo" table="todos">
+        <id name="Id">
+            <column name="Id"/>
+            <generator class="native"/>
+        </id>
+        <property name="Title"/>
+        <property name="Description"/>
+        <property name="Deadline"/>
+        <property name="Done"/>
+        <many-to-one name="Owner" column="UserId" class="LoadBalancer.DataBase.Entities.User" />
+    </class>
+</hibernate-mapping>

@@ -1,22 +1,11 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace LoadBalancer.DataBase.Models;
+namespace LoadBalancer.DataBase.Entities;
 
 public class Todo
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
-
-    [Required] 
-    public required string Title { get; set; }
-
-    public string? Describtion { get; set; }
-
-    [Column(TypeName = "DATE")] 
-    public DateTime Deadline { get; set; }
-
-    public bool Done { get; set; }
-    public User? User { get; set;}
+    public virtual int Id { get; set; }
+    public virtual string Title { get; set; }
+    public virtual string? Description { get; set; }
+    public virtual DateTime Deadline { get; set; }
+    public virtual bool Done { get; set; }
+    public virtual User? Owner { get; set; }
 }

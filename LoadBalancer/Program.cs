@@ -1,7 +1,5 @@
 ﻿using LoadBalancer.DataBase;
-using LoadBalancer.DataBase.Connection;
-using LoadBalancer.DataBase.Models;
-using Microsoft.EntityFrameworkCore;
+using LoadBalancer.DataBase.Entities;
 
 namespace LoadBalancer;
 
@@ -9,11 +7,24 @@ internal static class Program
 {
     private static void Main(string[] args)
     {
-        // DbHandler.Create(new User { Id = 5, Name = "Ana", Email = "ana@gmail.com", Sex = "Other" });
-        // DbHandler.Delete(new User { Id = 5 });
+        using var session = NHibernateHelper.OpenSession();
+        using var transaction = session.BeginTransaction();
+        var user = new User
+        {
+            Id = 1,
+            Name = "John",
+            Email = "john@example.com",
+            Sex = "Male"
+        };
+        session.Save(user);
+        transaction.Commit();
 
-        var context = new Context("Host=localhost;Port=5432;Username=user1;Password=password1;Database=database1");
-        context.User.Add(new User { Id = 6, Name = "Ana", Email = "ana@gmail.com", Sex = "Other" });
-        context.SaveChanges();
+        // var users_query = session.CreateQuery("FROM User");
+        // var users = users_query.List<User>();
+        // Console.WriteLine("\nwynik zapytania: ");
+        // foreach (var u in users)
+        // {
+        //     Console.WriteLine(u.Id.ToString() + " " + u.Name + " " + u.Email + " " + u.Sex);
+        // }
     }
 }
