@@ -4,17 +4,14 @@ namespace LoadBalancer.Connection;
 
 public static class Reader
 {
-    private static readonly string _path = "DataBase/Connection/db.json";
-
-
+    private static readonly string _path = "Connection/db.json";
+    public static List<DbInstance>? DBsConnectionStrings { get; set; }
+    
     static Reader()
     {
         InitializeConnectionStringList();
     }
-
-    public static List<DbInstance>? DBsConnectionStrings { get; set; }
-
-
+    
     private static void InitializeConnectionStringList()
     {
         var jsonContent = File.ReadAllText(_path);
