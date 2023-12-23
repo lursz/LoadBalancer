@@ -1,9 +1,0 @@
-{
-  "ExpandedNodes": [
-    "",
-    "\\LoadBalancer",
-    "\\LoadBalancer\\Core"
-  ],
-  "SelectedNode": "\\LoadBalancer\\Core\\DatabaseSession.cs",
-  "PreviewInSolutionExplorer": false
-}
