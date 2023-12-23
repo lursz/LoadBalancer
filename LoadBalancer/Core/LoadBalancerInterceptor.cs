@@ -1,5 +1,4 @@
 
-
 using NHibernate.Type;
 
 namespace LoadBalancer.Core;

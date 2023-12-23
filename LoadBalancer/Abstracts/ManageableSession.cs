@@ -1,5 +1,3 @@
-
-
 namespace LoadBalancer.Abstracts;
 
 public abstract class ManageableSession

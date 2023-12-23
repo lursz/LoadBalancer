@@ -1,4 +1,3 @@
-
 namespace LoadBalancer.Core;
 
 public class DatabaseSession : Abstracts.ManageableSession

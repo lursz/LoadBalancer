@@ -1,4 +1,6 @@
+using LoadBalancer.Abstracts;
 
+namespace LoadBalancer.Core;
 
 public class LoadBalancer(LoadBalanceAlgorithm loadBalancerAlgorithm)
 {

@@ -1,7 +1,6 @@
-
-
 namespace LoadBalancer.Abstracts;
 
-public abstract class LoadBalanceAlgorithm
+public interface LoadBalanceAlgorithm
 {
+    public ManageableSession chooseSession(ManageableSession[] sessions);
 }
