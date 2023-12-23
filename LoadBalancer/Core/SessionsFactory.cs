@@ -10,7 +10,10 @@ public class SessionsFactory
 
     public DatabaseSession[] createSessions()
     {
+        LoadBalancerInterceptor interceptor = new LoadBalancerInterceptor(loadBalancer);
         // TODO: Create interceptor and initialize sessions
+        
+        
 
         return [];       
     }

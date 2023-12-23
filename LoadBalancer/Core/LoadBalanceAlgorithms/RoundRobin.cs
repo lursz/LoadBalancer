@@ -1,10 +1,15 @@
 using LoadBalancer.Abstracts;
 
 namespace LoadBalancer.Core.LoadBalanceAlgorithms;
-public class RoundRobin : LoadBalanceAlgorithm
+public class RoundRobin : ILoadBalanceAlgorithm
 {
-    public ManageableSession chooseSession(ManageableSession[] sessions)
+    public DatabaseSession chooseSession(DatabaseSession[] sessions)
     {
-        throw new NotImplementedException();
+        foreach (var session in sessions)
+        {
+            if (session.Status == ManageableSession.Status.UP && session.isUsed() == false)
+                return session;
+        }
+        throw new InvalidOperationException("RoundRobin: Failed to choose a suitable session.");
     }
 }

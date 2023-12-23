@@ -1,6 +1,8 @@
+using LoadBalancer.Core;
+
 namespace LoadBalancer.Abstracts;
 
-public interface LoadBalanceAlgorithm
+public interface ILoadBalanceAlgorithm
 {
-    public ManageableSession chooseSession(ManageableSession[] sessions);
+    public DatabaseSession chooseSession(DatabaseSession[] sessions);
 }

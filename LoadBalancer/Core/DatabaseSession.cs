@@ -1,6 +1,8 @@
+using LoadBalancer.Abstracts;
+
 namespace LoadBalancer.Core;
 
-public class DatabaseSession : Abstracts.ManageableSession
+public class DatabaseSession : ManageableSession
 {
     public DatabaseSession()
     {

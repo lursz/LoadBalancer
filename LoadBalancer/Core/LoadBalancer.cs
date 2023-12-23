@@ -2,10 +2,10 @@ using LoadBalancer.Abstracts;
 
 namespace LoadBalancer.Core;
 
-public class LoadBalancer(LoadBalanceAlgorithm loadBalancerAlgorithm)
+public class LoadBalancer(ILoadBalanceAlgorithm loadBalancerAlgorithm)
 {
     private ManageableSession[] sessions;
-    private LoadBalanceAlgorithm loadBalancerAlgorithm = loadBalancerAlgorithm;
+    private ILoadBalanceAlgorithm loadBalancerAlgorithm = loadBalancerAlgorithm;
 
     public void injectSessions(ManageableSession[] sessions)
     {
