@@ -1,5 +1,7 @@
 
-public class DatabaseSession : ManageableSession
+namespace LoadBalancer.Core;
+
+public class DatabaseSession : Abstracts.ManageableSession
 {
     public DatabaseSession()
     {

@@ -1,6 +1,8 @@
 
 
 
+namespace LoadBalancer.Core;
+
 public class SessionsFactory 
 {
     private LoadBalancer loadBalancer;

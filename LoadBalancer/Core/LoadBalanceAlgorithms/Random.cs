@@ -1,5 +1,7 @@
 
 
-public class Random : LoadBalanceAlgorithm
+namespace LoadBalancer.Core.LoadBalanceAlgorithms;
+
+public class Random : Abstracts.LoadBalanceAlgorithm
 {
 }
