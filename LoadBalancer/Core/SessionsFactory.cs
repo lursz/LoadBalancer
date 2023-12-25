@@ -1,3 +1,5 @@
+using LoadBalancer.Connection;
+
 namespace LoadBalancer.Core;
 
 public class SessionsFactory 
@@ -11,10 +13,13 @@ public class SessionsFactory
     public DatabaseSession[] createSessions()
     {
         LoadBalancerInterceptor interceptor = new LoadBalancerInterceptor(loadBalancer);
-        // TODO: Create interceptor and initialize sessions
+        DatabaseSession[] sessionsArray = new DatabaseSession[Reader.DBsConnectionStrings.Count];
+        foreach (var connString in Reader.DBsConnectionStrings)
+        {
+            var session = new DatabaseSession(interceptor, connString.ConnectionString);
+            sessionsArray[Reader.DBsConnectionStrings.IndexOf(connString)] = session;
+        }
         
-        
-
-        return [];       
+        return sessionsArray;       
     }
 }
