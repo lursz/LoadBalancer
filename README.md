@@ -38,9 +38,10 @@ During the development of this project we have used the following design pattern
 - [Adapter](https://en.wikipedia.org/wiki/Adapter_pattern)
 - [Facade](https://en.wikipedia.org/wiki/Facade_pattern)
 
-- ![image](https://github.com/lursz/LoadBalancer/assets/64146291/c84d9563-e690-4a1a-8700-85557ff55fc4)
+![image](https://github.com/lursz/LoadBalancer/assets/64146291/c84d9563-e690-4a1a-8700-85557ff55fc4)
 
-- ![image](https://github.com/lursz/LoadBalancer/assets/64146291/77da963b-51e9-40bf-9175-fa3dbd5d6547)
+![image](https://github.com/lursz/LoadBalancer/assets/64146291/b8414ccc-f837-4ae1-a1a6-d151f63cb1e5)
+
 
 
 
