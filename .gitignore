@@ -2,6 +2,8 @@
 .vscode/
 LoadBalancer/.vscode/
 LoadBalancer/.idea/
+*.sln
+.vs/
 *.txt
 **/db.json
 # Build results
