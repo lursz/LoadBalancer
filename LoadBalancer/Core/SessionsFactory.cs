@@ -16,7 +16,7 @@ public class SessionsFactory
         DatabaseSession[] sessionsArray = new DatabaseSession[Reader.DBsConnectionStrings.Count];
         foreach (var connString in Reader.DBsConnectionStrings)
         {
-            var session = new DatabaseSession(interceptor, connString.ConnectionString);
+            var session = new DatabaseSession(interceptor, connString);
             sessionsArray[Reader.DBsConnectionStrings.IndexOf(connString)] = session;
         }
         
