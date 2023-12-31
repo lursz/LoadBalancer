@@ -13,7 +13,6 @@ public class DatabaseSession : ManageableSession
     private ISession session;
     private ISession interceptedSession;
     private string configFileName;
-    public Status status;
     
     public DatabaseSession(LoadBalancerInterceptor interceptor, string configFileName)
     {
@@ -89,9 +88,18 @@ public class DatabaseSession : ManageableSession
         Console.WriteLine("DatabaseSession fix");
     }
 
-    public override bool isUsed()
+    public override void markAsUsed()
     {
-        Console.WriteLine("DatabaseSession isUsed");
-        return false;
+        this.isUsed = true;
+    }
+
+    public override void markAsUnused()
+    {
+        this.isUsed = false;
+    }
+
+    public override ISession getConnection()
+    {
+        return this.interceptedSession;
     }
 }

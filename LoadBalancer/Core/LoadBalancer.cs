@@ -2,22 +2,23 @@ using LoadBalancer.Abstracts;
 
 namespace LoadBalancer.Core;
 
-public class LoadBalancer(ILoadBalanceAlgorithm loadBalancerAlgorithm)
+public class LoadBalancer<Session>(ILoadBalanceAlgorithm<Session> loadBalancerAlgorithm) where Session : ManageableSession
 {
-    private ManageableSession[] sessions;
-    private ILoadBalanceAlgorithm loadBalancerAlgorithm = loadBalancerAlgorithm;
+    private Session[] sessions;
+    private ILoadBalanceAlgorithm<Session> loadBalancerAlgorithm = loadBalancerAlgorithm;
 
-    public void injectSessions(ManageableSession[] sessions)
+    private Session mainSession;
+
+    public void injectSessions(Session[] sessions)
     {
         this.sessions = sessions;
     }
 
     public void redirect(DbRequest request) 
     {
-        if (this.sessions == null)
-        {
-            throw new Exception("Sessions not injected");
-        }
+        validateSessions();
+
+        Console.WriteLine($"[LOAD BALANCER] Redirecting request: {request}");
 
         foreach (var session in this.sessions)
         {
@@ -29,10 +30,25 @@ public class LoadBalancer(ILoadBalanceAlgorithm loadBalancerAlgorithm)
         }
     }
 
-    public void connection()
+    public T connection<T>() where T : class
     {
+        validateSessions();
+        
+        if (mainSession != null)
+        {
+            mainSession.markAsUnused();
+        }
         // TODO: Choose session using load balancing algorithm
-        // TODO: Mark session as used
-        // TODO: Return session
+        mainSession = this.loadBalancerAlgorithm.chooseSession(this.sessions);
+        mainSession.markAsUsed();
+        return mainSession.getConnection() as T;
+    }
+
+    private void validateSessions()
+    {
+        if (this.sessions == null || this.sessions.Length == 0)
+        {
+            throw new Exception("Sessions not injected");
+        }
     }
 }

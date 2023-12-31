@@ -5,9 +5,9 @@ namespace LoadBalancer.Core;
 
 public class LoadBalancerInterceptor : DatabaseInterceptor
 {
-    protected readonly LoadBalancer _loadBalancer;
+    protected readonly LoadBalancer<DatabaseSession> _loadBalancer;
 
-    public LoadBalancerInterceptor(LoadBalancer loadBalancer)
+    public LoadBalancerInterceptor(LoadBalancer<DatabaseSession> loadBalancer)
     {
         _loadBalancer = loadBalancer;
     }

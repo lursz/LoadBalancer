@@ -2,10 +2,12 @@ using LoadBalancer.Connection;
 
 namespace LoadBalancer.Core;
 
-public class SessionsFactory 
+
+// DatabaseSessions factory
+public class SessionsFactory
 {
-    private LoadBalancer loadBalancer;
-    public SessionsFactory(LoadBalancer loadBalancer)
+    private LoadBalancer<DatabaseSession> loadBalancer;
+    public SessionsFactory(LoadBalancer<DatabaseSession> loadBalancer)
     {
         this.loadBalancer = loadBalancer;
     }
@@ -14,10 +16,13 @@ public class SessionsFactory
     {
         LoadBalancerInterceptor interceptor = new LoadBalancerInterceptor(loadBalancer);
         DatabaseSession[] sessionsArray = new DatabaseSession[configFileNames.Length];
+        
+        int i = 0;
         foreach (string configFileName in configFileNames)
         {
             var session = new DatabaseSession(interceptor, configFileName);
-            sessionsArray.Append(session);
+            sessionsArray[i] = session;
+            i++;
         }
         
         return sessionsArray;       

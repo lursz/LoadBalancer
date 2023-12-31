@@ -1,13 +1,16 @@
-﻿namespace LoadBalancer;
+﻿using LoadBalancer.Core;
+using NHibernate;
+
+namespace LoadBalancer;
 
 internal static class Program
 {
     private static void Main(string[] args)
     {
-        Abstracts.ILoadBalanceAlgorithm loadBalanceAlgorithm = new Core.LoadBalanceAlgorithms.Random();
-        Core.LoadBalancer loadBalancer = new(loadBalanceAlgorithm);
+        Abstracts.ILoadBalanceAlgorithm<DatabaseSession> loadBalanceAlgorithm = new Core.LoadBalanceAlgorithms.Random<DatabaseSession>();
+        Core.LoadBalancer<DatabaseSession> loadBalancer = new(loadBalanceAlgorithm);
 
-        Core.SessionsFactory sessionsFactory = new(loadBalancer);
+        Core.SessionsFactory sessionsFactory = new SessionsFactory(loadBalancer);
 
         string[] configFileNames =
         [
@@ -17,12 +20,9 @@ internal static class Program
         ];
 
         Core.DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
-
-        // log sessions:
-        foreach (var session in sessions)
-        {
-            Console.WriteLine(session);
-        }
+        loadBalancer.injectSessions(sessions);
         
+        ISession session = loadBalancer.connection<ISession>();
+        session.BeginTransaction();
     }
 }
