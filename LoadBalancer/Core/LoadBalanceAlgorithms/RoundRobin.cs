@@ -11,7 +11,7 @@ public class RoundRobin : ILoadBalanceAlgorithm
         {
             var session = sessions[_index];
             _index = (_index + 1) % sessions.Length;
-            if (session.Status == ManageableSession.Status.UP && session.isUsed() == false)
+            if (session.status == ManageableSession.Status.UP && session.isUsed() == false)
                 return session;
             attempts--;
         }

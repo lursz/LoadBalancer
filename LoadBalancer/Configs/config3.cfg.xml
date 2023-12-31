@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <configSections>
+    <section name="hibernate-configuration"
+        type="NHibernate.Cfg.ConfigurationSectionHandler, NHibernate" />
+  </configSections>
+
+  <hibernate-configuration xmlns="urn:nhibernate-configuration-2.2">
+    <session-factory>
+      <property name="dialect">NHibernate.Dialect.PostgreSQLDialect</property>
+      <property name="connection.connection_string">
+        Server=localhost;Port=5434;Database=database3;User Id=user3;Password=password3;
+      </property>
+      <property name="connection.isolation">ReadCommitted</property>
+    </session-factory>
+  </hibernate-configuration>
+
+  <!-- other app specific config follows -->
+</configuration>

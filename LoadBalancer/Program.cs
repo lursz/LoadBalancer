@@ -7,9 +7,22 @@ internal static class Program
         Abstracts.ILoadBalanceAlgorithm loadBalanceAlgorithm = new Core.LoadBalanceAlgorithms.Random();
         Core.LoadBalancer loadBalancer = new(loadBalanceAlgorithm);
 
-        Abstracts.ManageableSession[] sessions = new Abstracts.ManageableSession[3];
-        loadBalancer.injectSessions(sessions);
+        Core.SessionsFactory sessionsFactory = new(loadBalancer);
 
-        // TODO: Execute queries
+        string[] configFileNames =
+        [
+            "./Configs/config1.cfg.xml",
+            "./Configs/config2.cfg.xml",
+            "./Configs/config3.cfg.xml",
+        ];
+
+        Core.DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
+
+        // log sessions:
+        foreach (var session in sessions)
+        {
+            Console.WriteLine(session);
+        }
+        
     }
 }

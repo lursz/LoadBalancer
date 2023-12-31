@@ -14,19 +14,19 @@ public class LoadBalancerInterceptor : DatabaseInterceptor
 
     public override void OnSave(object entity)
     {
-        _loadBalancer.redirect(new DbRequest(entity, DbRequestType.Save));
+        _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.INSERT));
     }
     public override void OnDelete(object entity)
     {
-        _loadBalancer.redirect(new DbRequest(entity, DbRequestType.Delete));
+        _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.DELETE));
     }
     public override void OnUpdate(object entity)
     {
-        _loadBalancer.redirect(new DbRequest(entity, DbRequestType.Update));
+        _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.UPDATE));
     }
     public override void OnLoad(object entity)
     {
-        _loadBalancer.redirect(new DbRequest(entity, DbRequestType.Load));
+        _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.SELECT));
     }
     
     

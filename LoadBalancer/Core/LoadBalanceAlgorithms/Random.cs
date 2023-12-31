@@ -11,7 +11,7 @@ public class Random : ILoadBalanceAlgorithm
         while (attempts > 0)
         {
             var session = sessions[new System.Random().Next(0, sessions.Length)];
-            if (session.Status == ManageableSession.Status.UP && session.isUsed() == false)
+            if (session.status == ManageableSession.Status.UP && session.isUsed() == false)
                 return session;
             attempts--;
         }

@@ -12,7 +12,7 @@ public class LoadBalancer(ILoadBalanceAlgorithm loadBalancerAlgorithm)
         this.sessions = sessions;
     }
 
-    public void redirect() 
+    public void redirect(DbRequest request) 
     {
         if (this.sessions == null)
         {

@@ -10,14 +10,14 @@ public class SessionsFactory
         this.loadBalancer = loadBalancer;
     }
 
-    public DatabaseSession[] createSessions()
+    public DatabaseSession[] createSessions(string[] configFileNames)
     {
         LoadBalancerInterceptor interceptor = new LoadBalancerInterceptor(loadBalancer);
-        DatabaseSession[] sessionsArray = new DatabaseSession[Reader.DBsConnectionStrings.Count];
-        foreach (var connString in Reader.DBsConnectionStrings)
+        DatabaseSession[] sessionsArray = new DatabaseSession[configFileNames.Length];
+        foreach (string configFileName in configFileNames)
         {
-            var session = new DatabaseSession(interceptor, connString);
-            sessionsArray[Reader.DBsConnectionStrings.IndexOf(connString)] = session;
+            var session = new DatabaseSession(interceptor, configFileName);
+            sessionsArray.Append(session);
         }
         
         return sessionsArray;       
