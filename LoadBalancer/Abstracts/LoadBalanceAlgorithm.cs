@@ -2,7 +2,7 @@ using LoadBalancer.Core;
 
 namespace LoadBalancer.Abstracts;
 
-public interface ILoadBalanceAlgorithm
+public interface ILoadBalanceAlgorithm<Session> where Session : ManageableSession
 {
-    public DatabaseSession chooseSession(DatabaseSession[] sessions);
+    public Session chooseSession(Session[] sessions);
 }

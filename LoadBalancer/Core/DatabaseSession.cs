@@ -9,19 +9,16 @@ namespace LoadBalancer.Core;
 public class DatabaseSession : ManageableSession
 {
     private LoadBalancerInterceptor interceptor;
-    private string connectionString;
-    private string name;
-    private Status status;
     private LinkedList<DbRequest> queue;
     private ISession session;
     private ISession interceptedSession;
+    private string configFileName;
     
-    public DatabaseSession(LoadBalancerInterceptor interceptor, DbInstance dbInstance)
+    public DatabaseSession(LoadBalancerInterceptor interceptor, string configFileName)
     {
-        
+        this.configFileName = configFileName;
         this.interceptor = interceptor;
-        this.connectionString = dbInstance.ConnectionString;
-        this.name = dbInstance.Name;
+        Console.WriteLine($"[NHIBERNATE SESSION] Creating session with file name: {configFileName}");
         try
         {
             Connect();
@@ -30,7 +27,8 @@ public class DatabaseSession : ManageableSession
         catch (Exception e)
         {
             this.status = Status.DOWN;
-            Console.WriteLine($"[NHIBERNATE SESSION '{name}'] Could not create connection. Details: {e.Message}");
+            Console.WriteLine($"[NHIBERNATE SESSION '{this.configFileName}'] Could not create connection. Details: {e.Message}");
+            Console.WriteLine(e);
         }
         this.queue = new LinkedList<DbRequest>();
     }
@@ -38,7 +36,7 @@ public class DatabaseSession : ManageableSession
     private void Connect()
     {
         var configuration = new Configuration();
-        configuration.Configure(this.connectionString);
+        configuration.Configure(this.configFileName);
         var sessionFactory = configuration.BuildSessionFactory();
         this.session = sessionFactory.OpenSession();
         this.interceptedSession = sessionFactory.WithOptions().Interceptor(interceptor).OpenSession();
@@ -75,7 +73,7 @@ public class DatabaseSession : ManageableSession
         {
             status = Status.DOWN;
             register(request);
-            Console.WriteLine($"[NHIBERNATE SESSION '{name}'] Could not execute request. Details: {exception.Message}");
+            Console.WriteLine($"[NHIBERNATE SESSION '{configFileName}'] Could not execute request. Details: {exception.Message}");
             throw;
         }
     }
@@ -90,9 +88,18 @@ public class DatabaseSession : ManageableSession
         Console.WriteLine("DatabaseSession fix");
     }
 
-    public override bool isUsed()
+    public override void markAsUsed()
     {
-        Console.WriteLine("DatabaseSession isUsed");
-        return false;
+        this.isUsed = true;
+    }
+
+    public override void markAsUnused()
+    {
+        this.isUsed = false;
+    }
+
+    public override ISession getConnection()
+    {
+        return this.interceptedSession;
     }
 }

@@ -1,15 +1,28 @@
-﻿namespace LoadBalancer;
+﻿using LoadBalancer.Core;
+using NHibernate;
+
+namespace LoadBalancer;
 
 internal static class Program
 {
     private static void Main(string[] args)
     {
-        Abstracts.ILoadBalanceAlgorithm loadBalanceAlgorithm = new Core.LoadBalanceAlgorithms.Random();
-        Core.LoadBalancer loadBalancer = new(loadBalanceAlgorithm);
+        Abstracts.ILoadBalanceAlgorithm<DatabaseSession> loadBalanceAlgorithm = new Core.LoadBalanceAlgorithms.Random<DatabaseSession>();
+        Core.LoadBalancer<DatabaseSession> loadBalancer = new(loadBalanceAlgorithm);
 
-        Abstracts.ManageableSession[] sessions = new Abstracts.ManageableSession[3];
+        Core.SessionsFactory sessionsFactory = new SessionsFactory(loadBalancer);
+
+        string[] configFileNames =
+        [
+            "./Configs/config1.cfg.xml",
+            "./Configs/config2.cfg.xml",
+            "./Configs/config3.cfg.xml",
+        ];
+
+        Core.DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
         loadBalancer.injectSessions(sessions);
-
-        // TODO: Execute queries
+        
+        ISession session = loadBalancer.connection<ISession>();
+        session.BeginTransaction();
     }
 }
