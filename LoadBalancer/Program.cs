@@ -13,11 +13,11 @@ internal static class Program
         Core.SessionsFactory sessionsFactory = new SessionsFactory(loadBalancer);
 
         string[] configFileNames =
-        [
+        {
             "./Configs/config1.cfg.xml",
             "./Configs/config2.cfg.xml",
             "./Configs/config3.cfg.xml",
-        ];
+        };
 
         Core.DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
         loadBalancer.injectSessions(sessions);
