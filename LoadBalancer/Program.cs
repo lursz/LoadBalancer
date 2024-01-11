@@ -1,4 +1,5 @@
 ﻿using LoadBalancer.Core;
+using LoadBalancer.DataBase.Entities;
 using NHibernate;
 
 namespace LoadBalancer;
@@ -24,5 +25,16 @@ internal static class Program
         
         ISession session = loadBalancer.connection<ISession>();
         session.BeginTransaction();
+
+        User user = new()
+        {
+            Id = 1,
+            Name = "John1",
+            Email = "john1@gmail.com",
+            Sex = "Male"
+        };
+
+        session.Save(user);
+        session.GetCurrentTransaction().Commit();
     }
 }
