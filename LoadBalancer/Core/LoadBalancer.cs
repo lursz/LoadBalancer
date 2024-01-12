@@ -23,7 +23,10 @@ public class LoadBalancer<Session>(ILoadBalanceAlgorithm<Session> loadBalancerAl
         foreach (var session in this.sessions)
         {
             try {
-                // TODO: execute request on each session
+                
+                if (session.isUsed) continue;
+                session.execute(request);
+
             } catch (Exception e) {
                 Console.WriteLine(e);
             }

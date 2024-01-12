@@ -33,9 +33,9 @@ internal static class Program
 
         User user = new()
         {
-            Id = 1,
-            Name = "John1",
-            Email = "john1@gmail.com",
+            // Id = 1,
+            Name = "Rafal",
+            Email = "rafal@gmail.com",
             Sex = "Male"
         };
 

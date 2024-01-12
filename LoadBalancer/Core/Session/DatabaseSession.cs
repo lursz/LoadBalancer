@@ -1,4 +1,5 @@
 using LoadBalancer.Abstracts;
+using LoadBalancer.DataBase.Entities;
 using NHibernate;
 using NHibernate.Cfg;
 
@@ -32,12 +33,8 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
     
     private void Connect()
     {
-        var configuration = new Configuration();
-        configuration.Configure(this.configFileName);
-
-        var sessionFactory = configuration.BuildSessionFactory();
-        session = sessionFactory.OpenSession();
-        interceptedSession = sessionFactory.WithOptions().Interceptor(interceptor).OpenSession();
+        session = new Configuration().Configure(this.configFileName).BuildSessionFactory().OpenSession();
+        interceptedSession = new Configuration().Configure(this.configFileName).BuildSessionFactory().WithOptions().Interceptor(interceptor).OpenSession();
         status = Status.UP;
         Console.WriteLine($"[NHIBERNATE SESSION '{configFileName}'] Connection established");
     }
@@ -71,12 +68,19 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
                 default:
                     throw new NotSupportedException($"Operation '{request.getType()}' is not supported");
             }
+            session.GetCurrentTransaction().Commit();
+            session.Clear();
         }
         catch (NotSupportedException exception)
         {
             register(request);
             Console.WriteLine($"[NHIBERNATE SESSION '{configFileName}'] Could not execute request. Details: {exception.Message}");
             throw;
+        }
+        catch(Exception exception)
+        {
+            // TODO: Set status to down
+            // TODO: Register request in a queue
         }
     }
 
