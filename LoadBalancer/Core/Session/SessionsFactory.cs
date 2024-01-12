@@ -1,6 +1,4 @@
-using LoadBalancer.Connection;
-
-namespace LoadBalancer.Core;
+namespace LoadBalancer.Core.Session;
 
 
 // DatabaseSessions factory

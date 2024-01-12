@@ -1,7 +1,6 @@
 using LoadBalancer.Abstracts;
-using NHibernate.Type;
 
-namespace LoadBalancer.Core;
+namespace LoadBalancer.Core.Session;
 
 public class LoadBalancerInterceptor : DatabaseInterceptor
 {

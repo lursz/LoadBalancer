@@ -2,10 +2,10 @@ using LoadBalancer.Abstracts;
 
 namespace LoadBalancer.Core;
 
-public class LoadBalancer<Session>(ILoadBalanceAlgorithm<Session> loadBalancerAlgorithm) where Session : ManageableSession
+public class LoadBalancer<Session>(ILoadBalanceAlgorithm<Session> loadBalancerAlgorithm)
+    where Session : ManageableSession
 {
     private Session[] sessions;
-    private ILoadBalanceAlgorithm<Session> loadBalancerAlgorithm = loadBalancerAlgorithm;
 
     private Session mainSession;
 
@@ -39,7 +39,7 @@ public class LoadBalancer<Session>(ILoadBalanceAlgorithm<Session> loadBalancerAl
             mainSession.markAsUnused();
         }
         // TODO: Choose session using load balancing algorithm
-        mainSession = this.loadBalancerAlgorithm.chooseSession(this.sessions);
+        mainSession = loadBalancerAlgorithm.chooseSession(this.sessions);
         mainSession.markAsUsed();
         return mainSession.getConnection() as T;
     }

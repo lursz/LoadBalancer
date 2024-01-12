@@ -1,10 +1,8 @@
-using System.Runtime.CompilerServices;
 using LoadBalancer.Abstracts;
-using LoadBalancer.Connection;
 using NHibernate;
 using NHibernate.Cfg;
 
-namespace LoadBalancer.Core;
+namespace LoadBalancer.Core.Session;
 
 public class DatabaseSession : ManageableSession, IUnitOfWork
 {

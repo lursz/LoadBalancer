@@ -11,7 +11,7 @@ public class Random<Session> : ILoadBalanceAlgorithm<Session> where Session : Ma
         sessions.CopyTo(sessionsCopy, 0);
         
         var randomIndex = new System.Random().Next(0, sessionsCopy.Length);
-        for (int i = randomIndex; i < sessionsCopy.Length; i++)
+        for (var i = randomIndex; i < sessionsCopy.Length; i++)
         {
             if (sessionsCopy[i] == null)
                 continue;

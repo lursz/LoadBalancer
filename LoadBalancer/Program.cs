@@ -1,4 +1,5 @@
 ﻿using LoadBalancer.Core;
+using LoadBalancer.Core.Session;
 using LoadBalancer.DataBase.Entities;
 using NHibernate;
 
@@ -9,9 +10,9 @@ internal static class Program
     private static void Main(string[] args)
     {
         Abstracts.ILoadBalanceAlgorithm<DatabaseSession> loadBalanceAlgorithm = new Core.LoadBalanceAlgorithms.Random<DatabaseSession>();
-        Core.LoadBalancer<DatabaseSession> loadBalancer = new(loadBalanceAlgorithm);
+        LoadBalancer<DatabaseSession> loadBalancer = new(loadBalanceAlgorithm);
 
-        Core.SessionsFactory sessionsFactory = new SessionsFactory(loadBalancer);
+        SessionsFactory sessionsFactory = new SessionsFactory(loadBalancer);
 
         string[] configFileNames =
         {
@@ -20,7 +21,7 @@ internal static class Program
             "./Configs/config3.cfg.xml",
         };
 
-        Core.DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
+        DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
         loadBalancer.injectSessions(sessions);
         
         ISession session = loadBalancer.connection<ISession>();
