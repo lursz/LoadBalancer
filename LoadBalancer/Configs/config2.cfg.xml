@@ -12,6 +12,8 @@
         Server=localhost;Port=5433;Database=database2;User Id=user2;Password=password2;
       </property>
       <property name="connection.isolation">ReadCommitted</property>
+      <!-- <mapping class="LoadBalancer.DataBase.Entities.User"/> -->
+      
     </session-factory>
   </hibernate-configuration>
 

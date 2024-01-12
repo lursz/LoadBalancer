@@ -1,5 +1,5 @@
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="LoadBalancer">
-    <class name="LoadBalancer.DataBase.Entities.User" table="users" persister="NHibernate.Persister.EntityPersister">
+    <class name="LoadBalancer.DataBase.Entities.User" table="users">
         <id name="Id">
             <generator class="native"/>
         </id>

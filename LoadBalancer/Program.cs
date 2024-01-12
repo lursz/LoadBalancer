@@ -16,8 +16,8 @@ internal static class Program
         string[] configFileNames =
         {
             "./Configs/config1.cfg.xml",
-            "./Configs/config2.cfg.xml",
-            "./Configs/config3.cfg.xml",
+            // "./Configs/config2.cfg.xml",
+            // "./Configs/config3.cfg.xml",
         };
 
         Core.DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);

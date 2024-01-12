@@ -4,7 +4,7 @@
         <property name="connection.driver_class">NHibernate.Driver.NpgsqlDriver</property>
         <property name="current_session_context_class">thread_static</property>
         <property name="dialect">NHibernate.Dialect.PostgreSQLDialect</property>
-        <property name="connection.connection_string">Server=localhost;Port=5432;Database=database1;User Id=user1;Password=password1;</property>
+        <!-- <property name="connection.connection_string">Server=localhost;Port=5432;Database=database1;User Id=user1;Password=password1;</property> -->
         <property name="show_sql">true</property>
         <mapping assembly="LoadBalancer" />
     </session-factory>
