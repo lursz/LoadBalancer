@@ -35,9 +35,6 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         var configuration = new Configuration();
         configuration.Configure(this.configFileName);
 
-        var schemaExport = new NHibernate.Tool.hbm2ddl.SchemaExport(configuration);
-        schemaExport.Create(true, true);
-
         var sessionFactory = configuration.BuildSessionFactory();
         session = sessionFactory.OpenSession();
         interceptedSession = sessionFactory.WithOptions().Interceptor(interceptor).OpenSession();

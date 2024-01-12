@@ -1,4 +1,5 @@
-﻿using LoadBalancer.Core;
+﻿using LoadBalancer.Connection;
+using LoadBalancer.Core;
 using LoadBalancer.Core.Session;
 using LoadBalancer.DataBase.Entities;
 using NHibernate;
@@ -20,6 +21,9 @@ internal static class Program
             "./Configs/config2.cfg.xml",
             "./Configs/config3.cfg.xml",
         };
+        
+        Migration migration = new(configFileNames);
+        migration.MigrateAll();
 
         DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
         loadBalancer.injectSessions(sessions);
