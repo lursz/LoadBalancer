@@ -23,7 +23,8 @@ internal static class Program
         };
         
         Migration migration = new(configFileNames);
-        migration.MigrateAll();
+        migration.DropAndMigrateAll();
+        // migration.MigrateAll();
 
         DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
         loadBalancer.injectSessions(sessions);
@@ -33,7 +34,7 @@ internal static class Program
 
         User user = new()
         {
-            // Id = 1,
+            // Id = 23,
             Name = "Rafal",
             Email = "rafal@gmail.com",
             Sex = "Male"
