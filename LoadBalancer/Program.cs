@@ -37,15 +37,30 @@ internal static class Program
 
             User user = new()
             {
-                // Id = 23,
-                Name = "Rafal",
+                Id = 1,
+                Name = "Elo",
                 Email = "rafal@gmail.com",
                 Sex = "Male"
             };
-
-            session.Save(user);
-            session.GetCurrentTransaction().Commit();
             
+            // CREATE
+            // session.Save(user);
+            // session.GetCurrentTransaction().Commit();
+            
+            // DELETE
+            // session.Delete(user);
+            // session.GetCurrentTransaction().Commit();
+            
+            // UPDATE
+            // session.Update(user);
+            // session.GetCurrentTransaction().Commit();
+
+            // SELECT
+            var users = session.CreateQuery("from User").List<User>();
+            foreach (var u in users)
+            {
+                Console.WriteLine(u.Name);
+            }
             
         }
         catch (Exception e)

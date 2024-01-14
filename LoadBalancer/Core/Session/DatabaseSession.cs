@@ -54,19 +54,21 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
     {
         try
         {
-            if (!session.GetCurrentTransaction().IsActive) session.BeginTransaction();
+            // if (!session.GetCurrentTransaction().IsActive) session.BeginTransaction();
+            session.BeginTransaction();
             switch (request.getType())
             {
                 case DbRequest.Type.INSERT:
                     Console.WriteLine($"Request: {request}");
                     session.Save(request.getObject());
-                    Console.WriteLine("SAVE OBJECT");
                     break;
                 case DbRequest.Type.UPDATE:
                     session.Update(request.getObject());
                     break;
                 case DbRequest.Type.DELETE:
                     session.Delete(request.getObject());
+                    break;
+                case DbRequest.Type.SELECT:
                     break;
                 default:
                     throw new NotSupportedException($"Operation '{request.getType()}' is not supported");
@@ -84,7 +86,9 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         {
             Console.WriteLine($"[NHIBERNATE SESSION EXCEPTION '{configFileName}'] Could not execute request. Details: {exception.Message}");
             // TODO: Set status to down
+            Close();
             // TODO: Register request in a queue
+            queue.AddLast(request);
         }
     }
 
