@@ -15,8 +15,15 @@ public class LoadBalancerInterceptor : EmptyInterceptor
 
     public override bool OnSave(object entity, object id, object[] state, string[] propertyNames, IType[] types)
     {
-        Console.WriteLine("SAVE INTERCEPTOR");
-        _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.INSERT));
+        try
+        {
+            Console.WriteLine("ONSAVE INTERCEPTOR");
+            _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.INSERT));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("INTERCEPTOR EXCEPTION");
+        }
         return false;
     }
     public override void OnDelete(object entity, object id, object[] state, string[] propertyNames, IType[] types)

@@ -54,10 +54,13 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
     {
         try
         {
+            if (!session.GetCurrentTransaction().IsActive) session.BeginTransaction();
             switch (request.getType())
             {
                 case DbRequest.Type.INSERT:
+                    Console.WriteLine($"Request: {request}");
                     session.Save(request.getObject());
+                    Console.WriteLine("SAVE OBJECT");
                     break;
                 case DbRequest.Type.UPDATE:
                     session.Update(request.getObject());
@@ -79,6 +82,7 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         }
         catch(Exception exception)
         {
+            Console.WriteLine($"[NHIBERNATE SESSION EXCEPTION '{configFileName}'] Could not execute request. Details: {exception.Message}");
             // TODO: Set status to down
             // TODO: Register request in a queue
         }

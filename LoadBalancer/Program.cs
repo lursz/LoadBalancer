@@ -10,37 +10,47 @@ internal static class Program
 {
     private static void Main(string[] args)
     {
-        Abstracts.ILoadBalanceAlgorithm<DatabaseSession> loadBalanceAlgorithm = new Core.LoadBalanceAlgorithms.Random<DatabaseSession>();
-        LoadBalancer<DatabaseSession> loadBalancer = new(loadBalanceAlgorithm);
-
-        SessionsFactory sessionsFactory = new SessionsFactory(loadBalancer);
-
-        string[] configFileNames =
+        try
         {
-            "./Configs/config1.cfg.xml",
-            "./Configs/config2.cfg.xml",
-            "./Configs/config3.cfg.xml",
-        };
-        
-        Migration migration = new(configFileNames);
-        migration.DropAndMigrateAll();
-        // migration.MigrateAll();
 
-        DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
-        loadBalancer.injectSessions(sessions);
-        
-        ISession session = loadBalancer.connection<ISession>();
-        session.BeginTransaction();
+            Abstracts.ILoadBalanceAlgorithm<DatabaseSession> loadBalanceAlgorithm = new Core.LoadBalanceAlgorithms.Random<DatabaseSession>();
+            LoadBalancer<DatabaseSession> loadBalancer = new(loadBalanceAlgorithm);
 
-        User user = new()
+            SessionsFactory sessionsFactory = new SessionsFactory(loadBalancer);
+
+            string[] configFileNames =
+            {
+                "./Configs/config1.cfg.xml",
+                "./Configs/config2.cfg.xml",
+                "./Configs/config3.cfg.xml",
+            };
+            
+            // Migration migration = new(configFileNames);
+            // migration.DropAndMigrateAll();
+            // migration.MigrateAll();
+
+            DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
+            loadBalancer.injectSessions(sessions);
+            
+            ISession session = loadBalancer.connection<ISession>();
+            session.BeginTransaction();
+
+            User user = new()
+            {
+                // Id = 23,
+                Name = "Rafal",
+                Email = "rafal@gmail.com",
+                Sex = "Male"
+            };
+
+            session.Save(user);
+            session.GetCurrentTransaction().Commit();
+            
+            
+        }
+        catch (Exception e)
         {
-            // Id = 23,
-            Name = "Rafal",
-            Email = "rafal@gmail.com",
-            Sex = "Male"
-        };
-
-        session.Save(user);
-        session.GetCurrentTransaction().Commit();
+            Console.WriteLine(e);
+        }
     }
 }
