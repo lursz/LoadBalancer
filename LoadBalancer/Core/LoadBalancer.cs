@@ -23,9 +23,8 @@ public class LoadBalancer<Session>(ILoadBalanceAlgorithm<Session> loadBalancerAl
         foreach (var session in this.sessions)
         {
             try {
-                Console.WriteLine($"isUsed: {session.isUsed}");
                 if (session.isUsed) continue;
-                Console.WriteLine("EXECUTING REQUEST");
+                Console.WriteLine("EXECUTE SESSION");
                 session.execute(request);
 
             } catch (Exception e) {
@@ -44,7 +43,7 @@ public class LoadBalancer<Session>(ILoadBalanceAlgorithm<Session> loadBalancerAl
         }
         // TODO: Choose session using load balancing algorithm
         mainSession = loadBalancerAlgorithm.chooseSession(this.sessions);
-        mainSession.getConnection();
+        // mainSession.getConnection();
         mainSession.markAsUsed();
         return mainSession.getConnection() as T;
     }

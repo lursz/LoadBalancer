@@ -10,7 +10,7 @@ public class Random<Session> : ILoadBalanceAlgorithm<Session> where Session : Ma
         for (var i = 0; i < sessions.Length; i++)
         {
             var index = (i + randomIndex) % sessions.Length;
-            
+            Console.WriteLine($"CHOOSED SESSION: {index}");
             var session = sessions[index];
             if (session.status == ManageableSession.Status.UP && session.isUsed == false)
                 return session;

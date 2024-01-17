@@ -13,7 +13,7 @@ internal static class Program
         try
         {
 
-            Abstracts.ILoadBalanceAlgorithm<DatabaseSession> loadBalanceAlgorithm = new Core.LoadBalanceAlgorithms.Random<DatabaseSession>();
+            Abstracts.ILoadBalanceAlgorithm<DatabaseSession> loadBalanceAlgorithm = new Core.LoadBalanceAlgorithms.RoundRobin<DatabaseSession>();
             LoadBalancer<DatabaseSession> loadBalancer = new(loadBalanceAlgorithm);
 
             SessionsFactory sessionsFactory = new SessionsFactory(loadBalancer);
@@ -32,20 +32,46 @@ internal static class Program
             DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
             loadBalancer.injectSessions(sessions);
             
-            ISession session = loadBalancer.connection<ISession>();
-            session.BeginTransaction();
+        
 
-            User user = new()
-            {
-                Id = 1,
-                Name = "Elo",
-                Email = "rafal@gmail.com",
-                Sex = "Male"
-            };
+            // User user = new()
+            // {
+            //     Id = 1,
+            //     Name = "Test",
+            //     Email = "test@gmail.com",
+            //     Sex = "Male"
+            // };
             
-            // CREATE
+            // session.BeginTransaction();
+
+            // // CREATE
             // session.Save(user);
             // session.GetCurrentTransaction().Commit();
+
+            // list with user names
+
+            for (int i = 0; i < 3; i++)
+            {
+                try {
+                    Console.WriteLine($"REQUEST: {i}");
+                    ISession session = loadBalancer.connection<ISession>();
+                    User user = new()
+                    {
+            
+                        Name = "He",
+                        Email = "john@gmail.com",
+                        Sex = "Male"
+                    };
+                
+                    session.BeginTransaction();
+                    session.Save(user);
+                    session.GetCurrentTransaction().Commit();
+                    // session.Clear();
+                
+                } catch (Exception exception) {
+                    Console.WriteLine(exception);
+                }
+            }
             
             // DELETE
             // session.Delete(user);
@@ -56,11 +82,11 @@ internal static class Program
             // session.GetCurrentTransaction().Commit();
 
             // SELECT
-            var users = session.CreateQuery("from User").List<User>();
-            foreach (var u in users)
-            {
-                Console.WriteLine(u.Name);
-            }
+            // var users = session.CreateQuery("from User").List<User>();
+            // foreach (var u in users)
+            // {
+            //     Console.WriteLine(u.Name);
+            // }
             
         }
         catch (Exception e)

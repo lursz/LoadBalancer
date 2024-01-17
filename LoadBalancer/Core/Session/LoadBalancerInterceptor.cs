@@ -19,13 +19,14 @@ public class LoadBalancerInterceptor : EmptyInterceptor
         try
         {
             Console.WriteLine("ONSAVE INTERCEPTOR");
+            Console.WriteLine(entity);
             _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.INSERT));
         }
         catch (Exception e)
         {
             Console.WriteLine("INTERCEPTOR EXCEPTION");
         }
-        return false;
+        return true;
     }
     public override void OnDelete(object entity, object id, object[] state, string[] propertyNames, IType[] types)
     {

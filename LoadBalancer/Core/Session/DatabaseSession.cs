@@ -25,8 +25,7 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         catch (Exception e)
         {
             this.status = Status.DOWN;
-            Console.WriteLine($"[NHIBERNATE SESSION '{this.configFileName}'] Could not create connection. Details: {e.Message}");
-            Console.WriteLine(e);
+            Console.WriteLine($"COULD NOT CONNECT TO DATABASE {configFileName}");
         }
         this.queue = new LinkedList<DbRequest>();
     }
@@ -55,6 +54,23 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         try
         {
             // if (!session.GetCurrentTransaction().IsActive) session.BeginTransaction();
+
+            // Do nothing on SELECT
+            if (request.getType() == DbRequest.Type.SELECT) return;
+
+            if (status == Status.DOWN)
+            {
+                // TODO: Register request in a queue
+                register(request);
+                Console.WriteLine($"DATABASE IS DOWN, REQUEST ADDED TO THE QUEUE: {queue.Count}");
+                return;
+            }
+
+            // TODO: What if status is SYNC?
+
+
+            // At this point status is UP
+            // but, the connection may break at any time
             session.BeginTransaction();
             switch (request.getType())
             {
@@ -68,8 +84,6 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
                 case DbRequest.Type.DELETE:
                     session.Delete(request.getObject());
                     break;
-                case DbRequest.Type.SELECT:
-                    break;
                 default:
                     throw new NotSupportedException($"Operation '{request.getType()}' is not supported");
             }
@@ -78,17 +92,19 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         }
         catch (NotSupportedException exception)
         {
-            register(request);
+            
             Console.WriteLine($"[NHIBERNATE SESSION '{configFileName}'] Could not execute request. Details: {exception.Message}");
             throw;
         }
         catch(Exception exception)
         {
-            Console.WriteLine($"[NHIBERNATE SESSION EXCEPTION '{configFileName}'] Could not execute request. Details: {exception.Message}");
+            Console.WriteLine("COULD NOT SEND REQUEST, DATABASE IS NOT ACTIVE");
+            Console.WriteLine(exception);
+            // Close();
             // TODO: Set status to down
-            Close();
+            status = Status.DOWN;
             // TODO: Register request in a queue
-            queue.AddLast(request);
+            register(request);
         }
     }
 
