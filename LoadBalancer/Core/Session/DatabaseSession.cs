@@ -63,6 +63,7 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
                 // TODO: Register request in a queue
                 register(request);
                 Console.WriteLine($"DATABASE IS DOWN, REQUEST ADDED TO THE QUEUE: {queue.Count}");
+                reconnect();
                 return;
             }
 
@@ -71,6 +72,10 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
 
             // At this point status is UP
             // but, the connection may break at any time
+            // if (!session.GetCurrentTransaction().IsActive) {
+
+            // }
+            
             session.BeginTransaction();
             switch (request.getType())
             {
@@ -88,6 +93,7 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
                     throw new NotSupportedException($"Operation '{request.getType()}' is not supported");
             }
             session.GetCurrentTransaction().Commit();
+            
             session.Clear();
         }
         catch (NotSupportedException exception)
@@ -137,7 +143,7 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
 
     public void syncChanges()
     {
-        Console.WriteLine($"[NHIBERNATE SESSION '{configFileName}'] Committing {queue.Count} requests");
+        Console.WriteLine($"[NHIBERNATE SESSION SYNC CHANGES'{configFileName}'] Committing {queue.Count} requests");
 
         try
         {
@@ -185,12 +191,11 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            Console.WriteLine("COULD NOT RECONNECT");
         }
     }
     
-    private bool isHealthy()
+    public bool isHealthy()
     {
         try
         {
@@ -205,7 +210,7 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
                 interceptedSession.FlushMode = FlushMode.Commit;
             
             var interceptedResult = interceptedSession.CreateSQLQuery("SELECT 1").UniqueResult();
-            
+            Console.WriteLine(interceptedResult);
             interceptedSession.FlushMode = FlushMode.Auto;
             
             return result != null && result.Equals(1) && interceptedResult != null && interceptedResult.Equals(1);
@@ -213,8 +218,8 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            // Console.WriteLine(e);
+            return false;
         }
     }
 

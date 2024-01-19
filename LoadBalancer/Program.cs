@@ -23,6 +23,7 @@ internal static class Program
                 "./Configs/config1.cfg.xml",
                 "./Configs/config2.cfg.xml",
                 "./Configs/config3.cfg.xml",
+                "./Configs/config4.cfg.xml",
             };
             
             // Migration migration = new(configFileNames);
@@ -31,8 +32,32 @@ internal static class Program
 
             DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
             loadBalancer.injectSessions(sessions);
+
+            // ISession session = loadBalancer.connection<ISession>();
+
+            while (true) {
+                try {
+                    string userInput = Console.ReadLine();
+                    // Console.WriteLine($"REQUEST: {i}");
+                    ISession session = loadBalancer.connection<ISession>();
+                    User user = new()
+                    {
             
-        
+                        Name = "Alisa",
+                        Email = "john@gmail.com",
+                        Sex = "Male"
+                    };
+                
+                    session.BeginTransaction();
+                    session.Save(user);
+                    session.GetCurrentTransaction().Commit();
+                    // session.Clear();
+                    Console.WriteLine("Added new user");
+                
+                } catch (Exception exception) {
+                    Console.WriteLine(exception);
+                }
+            }
 
             // User user = new()
             // {
@@ -48,30 +73,7 @@ internal static class Program
             // session.Save(user);
             // session.GetCurrentTransaction().Commit();
 
-            // list with user names
-
-            for (int i = 0; i < 3; i++)
-            {
-                try {
-                    Console.WriteLine($"REQUEST: {i}");
-                    ISession session = loadBalancer.connection<ISession>();
-                    User user = new()
-                    {
-            
-                        Name = "He",
-                        Email = "john@gmail.com",
-                        Sex = "Male"
-                    };
-                
-                    session.BeginTransaction();
-                    session.Save(user);
-                    session.GetCurrentTransaction().Commit();
-                    // session.Clear();
-                
-                } catch (Exception exception) {
-                    Console.WriteLine(exception);
-                }
-            }
+            // list with user name
             
             // DELETE
             // session.Delete(user);
