@@ -53,8 +53,6 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
     {
         try
         {
-            // if (!session.GetCurrentTransaction().IsActive) session.BeginTransaction();
-
             // Do nothing on SELECT
             if (request.getType() == DbRequest.Type.SELECT) return;
 
@@ -67,16 +65,14 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
                 return;
             }
 
-            // TODO: What if status is SYNC?
-
-
-            // At this point status is UP
-            // but, the connection may break at any time
-            // if (!session.GetCurrentTransaction().IsActive) {
-
-            // }
+            if (status == Status.SYNC)
+            {
+                Console.WriteLine($"DATABASE IS SYNCING, REQUEST ADDED TO THE QUEUE: {queue.Count}");
+            }
             
-            session.BeginTransaction();
+
+            if (!session.GetCurrentTransaction().IsActive)
+                session.BeginTransaction();
             switch (request.getType())
             {
                 case DbRequest.Type.INSERT:

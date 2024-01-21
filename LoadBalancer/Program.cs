@@ -23,7 +23,7 @@ internal static class Program
                 "./Configs/config1.cfg.xml",
                 "./Configs/config2.cfg.xml",
                 "./Configs/config3.cfg.xml",
-                "./Configs/config4.cfg.xml",
+                // "./Configs/config4.cfg.xml",
             };
             
             // Migration migration = new(configFileNames);
@@ -49,7 +49,7 @@ internal static class Program
                     };
                 
                     session.BeginTransaction();
-                    session.Save(user);
+                    session.SaveOrUpdate(user);
                     session.GetCurrentTransaction().Commit();
                     // session.Clear();
                     Console.WriteLine("Added new user");

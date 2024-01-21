@@ -14,9 +14,11 @@ public class RoundRobin<Session> : ILoadBalanceAlgorithm<Session> where Session 
             var session = sessions[currentIndex];
 
             if (session.status == ManageableSession.Status.UP && session.isUsed == false)
+            {
                 Console.WriteLine($"RETURNED SESSION WITH INDEX {currentIndex}");
                 prevIndex = currentIndex;
                 return session;
+            }
         }
         throw new InvalidOperationException("RoundRobin: Failed to choose a suitable session.");
     }

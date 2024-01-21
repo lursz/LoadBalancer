@@ -9,7 +9,7 @@
     <session-factory>
       <property name="dialect">NHibernate.Dialect.PostgreSQLDialect</property>
       <property name="connection.connection_string">
-        Server=localhost;Port=5434;Database=database3;User Id=user3;Password=password3;
+        Server=localhost;Port=5434;Database=database3;User Id=user3;Password=password3; Include Error Detail=true;
       </property>
       <property name="connection.isolation">ReadCommitted</property>
       <mapping assembly="LoadBalancer"/>

@@ -5,7 +5,7 @@ namespace LoadBalancer.Abstracts;
 public abstract class ManageableSession
 {
 
-    public enum Status { UP, DOWN }
+    public enum Status { UP, DOWN, SYNC }
     public Status status = Status.DOWN;
     public bool isUsed = false;
     private object session;
