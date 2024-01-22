@@ -88,8 +88,8 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
             }
             
 
-            if (!session.GetCurrentTransaction().IsActive)
-                session.BeginTransaction();
+            
+            session.BeginTransaction();
             switch (request.getType())
             {
                 case DbRequest.Type.INSERT:
