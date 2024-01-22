@@ -5,12 +5,13 @@ namespace LoadBalancer.Abstracts;
 public abstract class ManageableSession
 {
 
-    public enum Status { UP, DOWN, SYNC }
-    public Status status = Status.DOWN;
+    public State state;
     public bool isUsed = false;
     private object session;
 
     public abstract void execute(DbRequest request);
+
+    public abstract bool isHealthy();
 
     public abstract void reconnect();
 

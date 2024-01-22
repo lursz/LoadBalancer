@@ -22,12 +22,13 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         try
         {
             Connect();
+            this.state = new State(new Up());
         }
         catch (Exception e)
         {
-            this.status = Status.DOWN;
             Console.WriteLine($"COULD NOT CONNECT TO DATABASE {configFileName}");
-            Console.WriteLine(e);
+            // Console.WriteLine(e);
+            this.state = new State(new Down());
         }
         this.queue = new LinkedList<DbRequest>();
     }
@@ -36,21 +37,19 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
     {
         session = new Configuration().Configure(this.configFileName).BuildSessionFactory().OpenSession();
         interceptedSession = new Configuration().Configure(this.configFileName).BuildSessionFactory().WithOptions().Interceptor(interceptor).OpenSession();
-        status = Status.UP;
         session.CacheMode = CacheMode.Ignore;
         interceptedSession.CacheMode = CacheMode.Ignore;
         Console.WriteLine($"[NHIBERNATE SESSION '{configFileName}'] Connection established");
     }
 
     private void Close()
-    {
-        syncChanges();
-        
+    {        
         session.Close();
         session.SessionFactory.Close();
         interceptedSession.Close();
         interceptedSession.SessionFactory.Close();
-        this.status = Status.DOWN;
+        this.state.nextState();
+        Console.WriteLine($"CURRENT STATE: {this.state.status()}");
     }
 
     public void PrintObjectProperties(object obj)
@@ -73,22 +72,17 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
             // Do nothing on SELECT
             if (request.getType() == DbRequest.Type.SELECT) return;
 
-            if (status == Status.DOWN)
+            if (this.state.status() == Status.DOWN)
             {
-                // TODO: Register request in a queue
                 register(request);
-                Console.WriteLine($"DATABASE IS DOWN, REQUEST ADDED TO THE QUEUE: {queue.Count}");
+                Console.WriteLine($"DATABASE IS {this.state.status()}, REQUEST ADDED TO THE QUEUE: {queue.Count}");
                 reconnect();
                 return;
             }
 
-            if (status == Status.SYNC)
-            {
-                Console.WriteLine($"DATABASE IS SYNCING, REQUEST ADDED TO THE QUEUE: {queue.Count}");
-            }
+            Console.WriteLine($"EXECUTING REQUEST IN STATE: {this.state.status()}");
             
 
-            
             session.BeginTransaction();
             switch (request.getType())
             {
@@ -118,36 +112,11 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         catch(Exception exception)
         {
             Console.WriteLine("COULD NOT SEND REQUEST, DATABASE IS NOT ACTIVE");
-            Console.WriteLine(exception);
-            // Close();
-            // TODO: Set status to down
-            status = Status.DOWN;
-            // TODO: Register request in a queue
+            Close();
             register(request);
         }
     }
 
-    public void executeSingleRequest(DbRequest request)
-    {
-        try
-        {
-            if (!session.GetCurrentTransaction().IsActive)
-                session.BeginTransaction();
-
-            execute(request);
-
-            session.GetCurrentTransaction().Commit();
-            session.Clear();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(
-                $"[NHIBERNATE SESSION '{configFileName}'] Could not execute request. Details: {e.Message}");
-            Console.WriteLine(e);
-            session.GetCurrentTransaction().Rollback();
-            session.Clear();
-        }
-    }
 
     public void register(DbRequest request)
     {
@@ -157,25 +126,21 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
     public void syncChanges()
     {
         Console.WriteLine($"[NHIBERNATE SESSION SYNC CHANGES'{configFileName}'] Committing {queue.Count} requests");
-
+        this.state.nextState();
+        Console.WriteLine($"CURRENT STATE: {this.state.status()}");
         try
         {
-            if (!session.GetCurrentTransaction().IsActive)
-                session.BeginTransaction();
-
             foreach (var request in queue)
             {
                 execute(request);
             }
             
-            session.GetCurrentTransaction().Commit();
-            session.Clear();
             queue.Clear();
         }
         catch (Exception e)
         {
             Console.WriteLine($"[NHIBERNATE SESSION '{configFileName}'] Could not commit changes. Details: {e.Message}");
-            Console.WriteLine(e);
+            // Console.WriteLine(e);
             session.GetCurrentTransaction().Rollback();
             session.Clear();
             queue.Clear();
@@ -183,24 +148,13 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
     }
 
     public override void reconnect()
-    {
-        if (session != null)
-        {
-            session.SessionFactory.Close();
-            session.Close();
-        }
-        
-        if (interceptedSession != null)
-        {
-            interceptedSession.SessionFactory.Close();
-            interceptedSession.Close();
-        }
-        
+    {   
         try
         {
             Connect();
             if (isHealthy())
                 syncChanges();
+                this.state.nextState();
         }
         catch (Exception e)
         {
@@ -208,7 +162,7 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         }
     }
     
-    public bool isHealthy()
+    public override bool isHealthy()
     {
         try
         {
@@ -223,7 +177,6 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
                 interceptedSession.FlushMode = FlushMode.Commit;
             
             var interceptedResult = interceptedSession.CreateSQLQuery("SELECT 1").UniqueResult();
-            Console.WriteLine(interceptedResult);
             interceptedSession.FlushMode = FlushMode.Auto;
             
             return result != null && result.Equals(1) && interceptedResult != null && interceptedResult.Equals(1);

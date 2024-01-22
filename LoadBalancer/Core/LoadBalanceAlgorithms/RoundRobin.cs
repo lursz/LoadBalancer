@@ -13,8 +13,13 @@ public class RoundRobin<Session> : ILoadBalanceAlgorithm<Session> where Session 
             int currentIndex = (prevIndex + 1 + i) % sessions.Length;
             var session = sessions[currentIndex];
 
-            if (session.status == ManageableSession.Status.UP && session.isUsed == false)
+            if (session.state.status() == Status.UP && session.isUsed == false)
             {
+                if (!session.isHealthy()) {
+                    Console.WriteLine("SESSION IS NOT HEALTHY");
+                    continue;
+                }
+
                 Console.WriteLine($"RETURNED SESSION WITH INDEX {currentIndex}");
                 prevIndex = currentIndex;
                 return session;

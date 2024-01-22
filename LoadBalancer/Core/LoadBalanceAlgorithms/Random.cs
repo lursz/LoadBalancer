@@ -12,7 +12,7 @@ public class Random<Session> : ILoadBalanceAlgorithm<Session> where Session : Ma
             var index = (i + randomIndex) % sessions.Length;
             Console.WriteLine($"CHOOSED SESSION: {index}");
             var session = sessions[index];
-            if (session.status == ManageableSession.Status.UP && session.isUsed == false)
+            if (session.state.status() == Status.UP && session.isUsed == false)
                 return session;
         }
         throw new InvalidOperationException("Random: Failed to choose a suitable session.");
