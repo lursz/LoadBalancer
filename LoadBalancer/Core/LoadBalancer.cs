@@ -24,7 +24,6 @@ public class LoadBalancer<Session>(ILoadBalanceAlgorithm<Session> loadBalancerAl
         {
             try {
                 if (session.isUsed) continue;
-                Console.WriteLine("EXECUTE SESSION");
                 session.execute(request);
 
             } catch (Exception e) {

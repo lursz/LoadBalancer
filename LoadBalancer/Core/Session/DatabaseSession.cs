@@ -1,3 +1,4 @@
+using System.Reflection;
 using LoadBalancer.Abstracts;
 using LoadBalancer.DataBase.Entities;
 using NHibernate;
@@ -26,6 +27,7 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         {
             this.status = Status.DOWN;
             Console.WriteLine($"COULD NOT CONNECT TO DATABASE {configFileName}");
+            Console.WriteLine(e);
         }
         this.queue = new LinkedList<DbRequest>();
     }
@@ -35,6 +37,8 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         session = new Configuration().Configure(this.configFileName).BuildSessionFactory().OpenSession();
         interceptedSession = new Configuration().Configure(this.configFileName).BuildSessionFactory().WithOptions().Interceptor(interceptor).OpenSession();
         status = Status.UP;
+        session.CacheMode = CacheMode.Ignore;
+        interceptedSession.CacheMode = CacheMode.Ignore;
         Console.WriteLine($"[NHIBERNATE SESSION '{configFileName}'] Connection established");
     }
 
@@ -47,6 +51,19 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         interceptedSession.Close();
         interceptedSession.SessionFactory.Close();
         this.status = Status.DOWN;
+    }
+
+    public void PrintObjectProperties(object obj)
+    {
+        Type type = obj.GetType();
+        PropertyInfo[] properties = type.GetProperties();
+
+        foreach (PropertyInfo property in properties)
+        {
+            object value = property.GetValue(obj);
+
+            Console.WriteLine($"{property.Name}: {value}");
+        }
     }
 
     public override void execute(DbRequest request)
@@ -76,7 +93,6 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
             switch (request.getType())
             {
                 case DbRequest.Type.INSERT:
-                    Console.WriteLine($"Request: {request}");
                     session.Save(request.getObject());
                     break;
                 case DbRequest.Type.UPDATE:
@@ -89,7 +105,8 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
                     throw new NotSupportedException($"Operation '{request.getType()}' is not supported");
             }
             session.GetCurrentTransaction().Commit();
-            
+            session.Evict(request.getObject());
+            session.Flush();
             session.Clear();
         }
         catch (NotSupportedException exception)

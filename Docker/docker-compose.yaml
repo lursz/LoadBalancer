@@ -35,15 +35,15 @@ services:
       POSTGRES_PASSWORD: password3
 
   #   # 4
-  postgres4:
-    image: postgres
-    container_name: postgres4
-    ports:
-      - "5435:5432"
-    environment:
-      POSTGRES_DB: database4
-      POSTGRES_USER: user4
-      POSTGRES_PASSWORD: password4
+  # postgres4:
+  #   image: postgres
+  #   container_name: postgres4
+  #   ports:
+  #     - "5435:5432"
+  #   environment:
+  #     POSTGRES_DB: database4
+  #     POSTGRES_USER: user4
+  #     POSTGRES_PASSWORD: password4
 
   #   # 5
   #   postgres5:

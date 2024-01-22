@@ -23,7 +23,6 @@ internal static class Program
                 "./Configs/config1.cfg.xml",
                 "./Configs/config2.cfg.xml",
                 "./Configs/config3.cfg.xml",
-                // "./Configs/config4.cfg.xml",
             };
             
             // Migration migration = new(configFileNames);
@@ -42,16 +41,21 @@ internal static class Program
                     ISession session = loadBalancer.connection<ISession>();
                     User user = new()
                     {
-            
-                        Name = "Alisa",
+                        
+                        Name = userInput,
                         Email = "john@gmail.com",
                         Sex = "Male"
                     };
-                
+
+                    Console.WriteLine(session);
+
                     session.BeginTransaction();
-                    session.SaveOrUpdate(user);
+
+                    session.Save(user);
                     session.GetCurrentTransaction().Commit();
-                    // session.Clear();
+                    session.Flush();
+                    session.Clear();
+                    session.Evict(user);
                     Console.WriteLine("Added new user");
                 
                 } catch (Exception exception) {

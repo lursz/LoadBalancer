@@ -22,8 +22,6 @@
       <EmbeddedResource Include="DataBase\Entities\User.hbm.xml" />
       <None Remove="DataBase\Entities\User.hbm.xml" />
 
-      <EmbeddedResource Include="DataBase\Entities\Todo.hbm.xml" />
-      <None Remove="DataBase\Entities\Todo.hbm.xml" />
     </ItemGroup>
 
 </Project>
