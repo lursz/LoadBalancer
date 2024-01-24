@@ -5,10 +5,10 @@ using LoadBalancer.Core;
 
 
 
-class MonitorThread
+class SessionMonitorThread : MonitorThread
 {
     ManageableSession session;
-    public MonitorThread(ManageableSession session)
+    public SessionMonitorThread(ManageableSession session)
     {
         this.session = session;
         Thread thread = new Thread(new ThreadStart(this.Run));
@@ -17,7 +17,7 @@ class MonitorThread
     }
 
 
-    private void Run()
+    public override void Run()
     {
         try {
             while (true)
@@ -31,7 +31,7 @@ class MonitorThread
         }
     }
 
-    private void Check()
+    public override void Check()
     {
         try {
             // Console.WriteLine("Monitor routine checks...");

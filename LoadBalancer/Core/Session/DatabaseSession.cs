@@ -32,7 +32,7 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
             this.state = new State(new Down());
         }
         this.queue = new LinkedList<DbRequest>();
-        _ = new MonitorThread(this);
+        _ = new SessionMonitorThread(this);
     }
     
     private void Connect()
