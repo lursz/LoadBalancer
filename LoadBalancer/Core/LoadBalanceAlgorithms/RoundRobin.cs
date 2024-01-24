@@ -4,13 +4,13 @@ namespace LoadBalancer.Core.LoadBalanceAlgorithms;
 
 public class RoundRobin<Session> : ILoadBalanceAlgorithm<Session> where Session : ManageableSession
 {
-    private static int prevIndex = -1;
+    private static int _prevIndex = -1;
 
     public Session chooseSession(Session[] sessions)
     {
         for (var i = 0; i < sessions.Length; i++)
         {
-            int currentIndex = (prevIndex + 1 + i) % sessions.Length;
+            int currentIndex = (_prevIndex + 1 + i) % sessions.Length;
             var session = sessions[currentIndex];
 
             if (session.state.status() == Status.UP && session.isUsed == false)
@@ -21,7 +21,7 @@ public class RoundRobin<Session> : ILoadBalanceAlgorithm<Session> where Session 
                 }
 
                 Console.WriteLine($"RETURNED SESSION WITH INDEX {currentIndex}");
-                prevIndex = currentIndex;
+                _prevIndex = currentIndex;
                 return session;
             }
         }

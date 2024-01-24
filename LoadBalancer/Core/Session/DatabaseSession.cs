@@ -52,18 +52,6 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         Console.WriteLine($"CURRENT STATE: {this.state.status()}");
     }
 
-    public void PrintObjectProperties(object obj)
-    {
-        Type type = obj.GetType();
-        PropertyInfo[] properties = type.GetProperties();
-
-        foreach (PropertyInfo property in properties)
-        {
-            object value = property.GetValue(obj);
-
-            Console.WriteLine($"{property.Name}: {value}");
-        }
-    }
 
     public override void execute(DbRequest request)
     {
@@ -140,7 +128,6 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         catch (Exception e)
         {
             Console.WriteLine($"[NHIBERNATE SESSION '{configFileName}'] Could not commit changes. Details: {e.Message}");
-            // Console.WriteLine(e);
             session.GetCurrentTransaction().Rollback();
             session.Clear();
             queue.Clear();
@@ -152,9 +139,9 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         try
         {
             Connect();
-            if (isHealthy())
-                syncChanges();
-                this.state.nextState();
+            if (!isHealthy()) return;
+            syncChanges();
+            this.state.nextState();
         }
         catch (Exception e)
         {
@@ -202,5 +189,19 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
     public override ISession getConnection()
     {
         return this.interceptedSession;
+    }
+    
+    
+    public void PrintObjectProperties(object obj)
+    {
+        Type type = obj.GetType();
+        PropertyInfo[] properties = type.GetProperties();
+
+        foreach (PropertyInfo property in properties)
+        {
+            object value = property.GetValue(obj);
+
+            Console.WriteLine($"{property.Name}: {value}");
+        }
     }
 }

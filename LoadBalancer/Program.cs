@@ -33,40 +33,68 @@ internal static class Program
             loadBalancer.injectSessions(sessions);
 
             // ISession session = loadBalancer.connection<ISession>();
-
-            User user = new()
-            {
-                
-                Name = "John",
-                Email = "john@gmail.com",
-                Sex = "Male"
-            };
+            
 
             while (true) {
                 try {
+                    Console.WriteLine($" >> List of commands:\t 1 - Select\t 2 - List all users\t 3 - Insert\t 4 - Insert random user\t 5 - Delete\t 6 - Update\t 7 - Change LoadBalancing algorithm >> ");
+                    Console.Clear();
                     string userInput = Console.ReadLine();
-                    // Console.WriteLine($"REQUEST: {i}");
                     ISession session = loadBalancer.connection<ISession>();
 
                     switch (userInput) 
                     {
-                        case "1":
-                            var users = session.CreateQuery("from User").List<User>();
-                            foreach (var u in users)
+                        case "1": // Select
+                            Console.WriteLine("Enter user ID: ");
+                            var userID = Console.ReadLine();
+                            var selectedUser = session.Get<User>(int.Parse(userID));
+                            Console.WriteLine($"{selectedUser.Name}, {selectedUser.Email}, {selectedUser.Sex})");
+                            break;
+                        
+                        case "2": //List all users
+                            var allUsers = session.CreateQuery("from User").List<User>();
+                            foreach (var u in allUsers)
                             {
                                 Console.WriteLine($"{u.Id} {u.Name} {u.Email} {u.Sex}");
                             }
                             break;
-                        case "2":
+                        
+                        case "3": // Insert
+                            User insertUser = getUserFromKeyboard();
                             session.BeginTransaction();
-                            session.Save(user);
+                            session.Save(insertUser);
                             session.GetCurrentTransaction().Commit();
                             session.Flush();
                             session.Clear();
-                            session.Evict(user);
+                            session.Evict(insertUser);
                             Console.WriteLine("Added new user");
                             break;
-                        case "3":
+                        
+                        case "4": //Insert random user
+                            
+                            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+                            Random random = new();
+                            string randomName = new string(Enumerable.Repeat(chars, 10).Select(s => s[random.Next(s.Length)]).ToArray());
+                            string randomEmail = new string(Enumerable.Repeat(chars, 10).Select(s => s[random.Next(s.Length)]).ToArray());
+                            
+                            User randomUser = new()
+                                {
+                                    Name = randomName,
+                                    Email = randomEmail,
+                                    Sex = "Female"
+                                };
+                            session.BeginTransaction();
+                            session.Save(randomUser);
+                            session.GetCurrentTransaction().Commit();
+                            session.Flush();
+                            session.Clear();
+                            session.Evict(randomUser);
+                            Console.WriteLine("Added new user");
+                            
+                            break;
+                        
+                        case "5": // Delete
+                            Console.WriteLine("Enter ID to delete: ");
                             string deleteId = Console.ReadLine();
                             var userToDelete = session.Get<User>(int.Parse(deleteId));
                             session.BeginTransaction();
@@ -77,7 +105,8 @@ internal static class Program
                             session.Evict(userToDelete);
                             Console.WriteLine("Removed user");
                             break;
-                        case "4":
+                        
+                        case "6": // Update
                             User updatedUser = new()
                             {
                                 Id = 1,
@@ -91,6 +120,27 @@ internal static class Program
                             session.Clear();
                             session.Evict(updatedUser);
                             break;
+                        
+                        case "7": //Change LoadBalancing algorithm
+                            Console.WriteLine("Choose algorithm: 1 - RoundRobin, 2 - Random");
+                            string algorithm = Console.ReadLine();
+                            switch (algorithm) {
+                                case "1":
+                                    loadBalanceAlgorithm = new Core.LoadBalanceAlgorithms.RoundRobin<DatabaseSession>();
+                                    loadBalancer.changeLoadBalanceAlgorithm(loadBalanceAlgorithm);
+                                    Console.WriteLine("Algorithm changed to RoundRobin");
+                                    break;
+                                case "2":
+                                    loadBalanceAlgorithm = new Core.LoadBalanceAlgorithms.Random<DatabaseSession>();
+                                    loadBalancer.changeLoadBalanceAlgorithm(loadBalanceAlgorithm);
+                                    Console.WriteLine("Algorithm changed to Random");
+                                    break;
+                                default:
+                                    Console.WriteLine("Invalid input");
+                                    break;
+                            }
+                            break;
+                        
                         default:
                             Console.WriteLine("Invalid input");
                             break;
@@ -135,10 +185,26 @@ internal static class Program
             //     Console.WriteLine(u.Name);
             // }
             
+            
+            
+            User getUserFromKeyboard()
+            {
+                User tempUser = new();
+                Console.WriteLine("Enter user name");
+                tempUser.Name = Console.ReadLine();
+                Console.WriteLine("Enter user email");
+                tempUser.Email = Console.ReadLine();
+                Console.WriteLine("Enter your sex");
+                tempUser.Sex = Console.ReadLine();
+                return tempUser;
+            }
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
     }
+
+
+    
 }
