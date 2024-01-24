@@ -18,22 +18,21 @@ public class LoadBalancerInterceptor : EmptyInterceptor
     {
         try
         {
-            Console.WriteLine("ONSAVE INTERCEPTOR");
+            Console.WriteLine("[INTERCEPTOR] ON SAVE INTERCEPTOR");
             Console.WriteLine(entity);
             _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.INSERT));
         }
         catch (Exception e)
         {
-            Console.WriteLine("INTERCEPTOR EXCEPTION");
+            Console.WriteLine("[INTERCEPTOR] INTERCEPTOR EXCEPTION");
         }
         return true;
     }
     public override void OnDelete(object entity, object id, object[] state, string[] propertyNames, IType[] types)
     {
-        Console.WriteLine("ONDELETE INTERCEPTOR");
         try
         {
-            Console.WriteLine("DELETE INTERCEPTOR");
+            Console.WriteLine("[INTERCEPTOR] DELETE INTERCEPTOR");
             _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.DELETE));
 
         }
@@ -47,10 +46,9 @@ public class LoadBalancerInterceptor : EmptyInterceptor
 
     public override bool OnFlushDirty(object entity, object id, object[] currentState, object[] previousState, string[] propertyNames, IType[] types)
     {
-        Console.WriteLine("ONFLUSHDIRTY INTERCEPTOR");
         try
         {
-            Console.WriteLine("FLUSHDIRTY INTERCEPTOR");
+            Console.WriteLine("[INTERCEPTOR] FLUSH DIRTY INTERCEPTOR");
             _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.UPDATE));
         }
         catch (Exception e)
@@ -63,7 +61,7 @@ public class LoadBalancerInterceptor : EmptyInterceptor
     
     public override bool OnLoad(object entity, object id, object[] state, string[] propertyNames, IType[] types)
     {   
-        Console.WriteLine("LOAD INTERCEPTOR");
+        // Console.WriteLine("LOAD INTERCEPTOR");
         _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.SELECT));
         return false;
     }

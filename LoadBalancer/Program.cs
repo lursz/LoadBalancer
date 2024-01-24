@@ -29,17 +29,16 @@ internal static class Program
                 Migration migration = new(configFileNames);
                 migration.DropAndMigrateAll();
                 migration.MigrateAll();
-            } catch(Exception e) {
-
             }
-            
-            
+            catch (Exception e)
+            {
+                // ignored
+            }
+
 
             DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
             loadBalancer.injectSessions(sessions);
 
-            // ISession session = loadBalancer.connection<ISession>();
-            
 
             while (true) {
                 try {
@@ -164,9 +163,9 @@ internal static class Program
                 User tempUser = new();
                 Console.WriteLine("Enter user name");
                 tempUser.Name = Console.ReadLine();
-                Console.WriteLine("Enter user email");
+                Console.WriteLine("Enter email");
                 tempUser.Email = Console.ReadLine();
-                Console.WriteLine("Enter your sex");
+                Console.WriteLine("Enter gender");
                 tempUser.Sex = Console.ReadLine();
                 return tempUser;
             }

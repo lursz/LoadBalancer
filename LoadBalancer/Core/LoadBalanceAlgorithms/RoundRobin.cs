@@ -16,11 +16,11 @@ public class RoundRobin<Session> : ILoadBalanceAlgorithm<Session> where Session 
             if (session.state.status() == Status.UP && session.isUsed == false)
             {
                 if (!session.isHealthy()) {
-                    Console.WriteLine("SESSION IS NOT HEALTHY");
+                    Console.WriteLine($"Session {currentIndex} is unhealthy, skipping...");
                     continue;
                 }
 
-                Console.WriteLine($"RETURNED SESSION WITH INDEX {currentIndex}");
+                Console.WriteLine($"RoundRobin: Chosen session: {currentIndex}");
                 _prevIndex = currentIndex;
                 return session;
             }

@@ -37,10 +37,9 @@ class SessionMonitorThread : MonitorThread
             // Console.WriteLine("Monitor routine checks...");
             if (session.isHealthy())  
             {
-                Console.WriteLine("SESSION IS HEALTHY");
                 if (session.state.status() == Status.DOWN)
                 {
-                    Console.WriteLine("Session is health but downy, reconnecting...");
+                    Console.WriteLine("Session is healthy but down, reconnecting...");
                     session.reconnect();
                 }
                 // Console.WriteLine("Session is healthy");

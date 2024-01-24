@@ -27,7 +27,7 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         }
         catch (Exception e)
         {
-            Console.WriteLine($"COULD NOT CONNECT TO DATABASE {configFileName}");
+            Console.WriteLine($"[NHIBERNATE SESSION EXCEPTION] COULD NOT CONNECT TO DATABASE {configFileName}");
             // Console.WriteLine(e);
             this.state = new State(new Down());
         }
@@ -55,7 +55,7 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
             if (this.state.status() == Status.DOWN)
             {
                 register(request);
-                Console.WriteLine($"DATABASE IS {this.state.status()}, REQUEST ADDED TO THE QUEUE: {queue.Count}");
+                Console.WriteLine($"Database is {this.state.status()}, request added to the queue: {queue.Count}");
                 // reconnect();
                 return;
             }

@@ -32,7 +32,7 @@ public class LoadBalancer<Session>()
     {
         validateSessions();
 
-        Console.WriteLine($"[LOAD BALANCER] Redirecting request: {request}");
+        // Console.WriteLine($"[LOAD BALANCER] Redirecting request: {request}");
 
         foreach (var session in this.sessions)
         {
@@ -54,7 +54,6 @@ public class LoadBalancer<Session>()
         {
             mainSession.markAsUnused();
         }
-        // TODO: Choose session using load balancing algorithm
         mainSession = loadBalancerAlgorithm.chooseSession(this.sessions);
         // mainSession.getConnection();
         mainSession.markAsUsed();
