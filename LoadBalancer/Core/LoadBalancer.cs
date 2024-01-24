@@ -2,17 +2,31 @@ using LoadBalancer.Abstracts;
 
 namespace LoadBalancer.Core;
 
-public class LoadBalancer<Session>(ILoadBalanceAlgorithm<Session> loadBalancerAlgorithm)
+public class LoadBalancer<Session>()
     where Session : ManageableSession
 {
     private Session[] sessions;
 
     private Session mainSession;
 
+    private ILoadBalanceAlgorithm<Session> loadBalancerAlgorithm;
+
     public void injectSessions(Session[] sessions)
     {
         this.sessions = sessions;
     }
+
+    public LoadBalancer(ILoadBalanceAlgorithm<Session> loadBalancerAlgorithm) :this()
+    {
+        this.loadBalancerAlgorithm = loadBalancerAlgorithm;
+    }
+
+    public void changeLoadBalanceAlgorithm(ILoadBalanceAlgorithm<Session> loadBalancerAlgorithm)
+    {
+        this.loadBalancerAlgorithm = loadBalancerAlgorithm;
+    }
+
+
 
     public void redirect(DbRequest request) 
     {

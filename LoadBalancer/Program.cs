@@ -25,38 +25,79 @@ internal static class Program
                 "./Configs/config3.cfg.xml",
             };
             
-            // Migration migration = new(configFileNames);
-            // migration.DropAndMigrateAll();
-            // migration.MigrateAll();
+            Migration migration = new(configFileNames);
+            migration.DropAndMigrateAll();
+            migration.MigrateAll();
 
             DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
             loadBalancer.injectSessions(sessions);
 
             // ISession session = loadBalancer.connection<ISession>();
 
+            User user = new()
+            {
+                
+                Name = "John",
+                Email = "john@gmail.com",
+                Sex = "Male"
+            };
+
             while (true) {
                 try {
                     string userInput = Console.ReadLine();
                     // Console.WriteLine($"REQUEST: {i}");
                     ISession session = loadBalancer.connection<ISession>();
-                    User user = new()
+
+                    switch (userInput) 
                     {
-                        
-                        Name = userInput,
-                        Email = "john@gmail.com",
-                        Sex = "Male"
-                    };
+                        case "1":
+                            var users = session.CreateQuery("from User").List<User>();
+                            foreach (var u in users)
+                            {
+                                Console.WriteLine($"{u.Id} {u.Name} {u.Email} {u.Sex}");
+                            }
+                            break;
+                        case "2":
+                            session.BeginTransaction();
+                            session.Save(user);
+                            session.GetCurrentTransaction().Commit();
+                            session.Flush();
+                            session.Clear();
+                            session.Evict(user);
+                            Console.WriteLine("Added new user");
+                            break;
+                        case "3":
+                            string deleteId = Console.ReadLine();
+                            var userToDelete = session.Get<User>(int.Parse(deleteId));
+                            session.BeginTransaction();
+                            session.Delete(userToDelete);
+                            session.GetCurrentTransaction().Commit();
+                            session.Flush();
+                            session.Clear();
+                            session.Evict(userToDelete);
+                            Console.WriteLine("Removed user");
+                            break;
+                        case "4":
+                            User updatedUser = new()
+                            {
+                                Id = 1,
+                                Name = "Bob",
+                                Email = "bob@gmail.com",
+                                Sex = "Male"
+                            };
+                            session.Update(updatedUser);
+                            session.GetCurrentTransaction().Commit();
+                            session.Flush();
+                            session.Clear();
+                            session.Evict(updatedUser);
+                            break;
+                        default:
+                            Console.WriteLine("Invalid input");
+                            break;
+                    }
 
-                    Console.WriteLine(session);
 
-                    session.BeginTransaction();
-
-                    session.Save(user);
-                    session.GetCurrentTransaction().Commit();
-                    session.Flush();
-                    session.Clear();
-                    session.Evict(user);
-                    Console.WriteLine("Added new user");
+                   
                 
                 } catch (Exception exception) {
                     Console.WriteLine(exception);

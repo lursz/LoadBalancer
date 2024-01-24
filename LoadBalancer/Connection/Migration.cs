@@ -25,7 +25,7 @@ public class Migration(string[] configFileName)
             configuration.Configure(config);
 
             var schemaExport = new NHibernate.Tool.hbm2ddl.SchemaExport(configuration);
-            schemaExport.Create(false, false);
+            schemaExport.Create(false, true);
         }
     }
     
