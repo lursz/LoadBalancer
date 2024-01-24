@@ -38,7 +38,6 @@ internal static class Program
             while (true) {
                 try {
                     Console.WriteLine($" >> List of commands:\t 1 - Select\t 2 - List all users\t 3 - Insert\t 4 - Insert random user\t 5 - Delete\t 6 - Update\t 7 - Change LoadBalancing algorithm >> ");
-                    Console.Clear();
                     string userInput = Console.ReadLine();
                     ISession session = loadBalancer.connection<ISession>();
 
@@ -107,18 +106,20 @@ internal static class Program
                             break;
                         
                         case "6": // Update
-                            User updatedUser = new()
-                            {
-                                Id = 1,
-                                Name = "Bob",
-                                Email = "bob@gmail.com",
-                                Sex = "Male"
-                            };
-                            session.Update(updatedUser);
+                            Console.WriteLine("Enter ID to update: ");
+                            string updateId = Console.ReadLine();
+                            var userToUpdate = session.Get<User>(int.Parse(updateId));
+                            Console.WriteLine("Enter new name: ");
+                            var userNewName = Console.ReadLine();
+                            
+                            userToUpdate.Name = userNewName;
+                            session.BeginTransaction();
+                            session.Update(userToUpdate);
                             session.GetCurrentTransaction().Commit();
                             session.Flush();
                             session.Clear();
-                            session.Evict(updatedUser);
+                            session.Evict(userToUpdate);
+                            Console.WriteLine("Updated user");
                             break;
                         
                         case "7": //Change LoadBalancing algorithm
@@ -145,46 +146,11 @@ internal static class Program
                             Console.WriteLine("Invalid input");
                             break;
                     }
-
-
-                   
                 
                 } catch (Exception exception) {
                     Console.WriteLine(exception);
                 }
             }
-
-            // User user = new()
-            // {
-            //     Id = 1,
-            //     Name = "Test",
-            //     Email = "test@gmail.com",
-            //     Sex = "Male"
-            // };
-            
-            // session.BeginTransaction();
-
-            // // CREATE
-            // session.Save(user);
-            // session.GetCurrentTransaction().Commit();
-
-            // list with user name
-            
-            // DELETE
-            // session.Delete(user);
-            // session.GetCurrentTransaction().Commit();
-            
-            // UPDATE
-            // session.Update(user);
-            // session.GetCurrentTransaction().Commit();
-
-            // SELECT
-            // var users = session.CreateQuery("from User").List<User>();
-            // foreach (var u in users)
-            // {
-            //     Console.WriteLine(u.Name);
-            // }
-            
             
             
             User getUserFromKeyboard()
