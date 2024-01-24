@@ -22,12 +22,18 @@ internal static class Program
             {
                 "./Configs/config1.cfg.xml",
                 "./Configs/config2.cfg.xml",
-                "./Configs/config3.cfg.xml",
+                // "./Configs/config3.cfg.xml",
             };
+
+            try {
+                Migration migration = new(configFileNames);
+                migration.DropAndMigrateAll();
+                migration.MigrateAll();
+            } catch(Exception e) {
+
+            }
             
-            Migration migration = new(configFileNames);
-            migration.DropAndMigrateAll();
-            migration.MigrateAll();
+            
 
             DatabaseSession[] sessions = sessionsFactory.createSessions(configFileNames);
             loadBalancer.injectSessions(sessions);

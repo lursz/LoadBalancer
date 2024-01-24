@@ -23,6 +23,7 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         {
             Connect();
             this.state = new State(new Up());
+            
         }
         catch (Exception e)
         {
@@ -31,6 +32,7 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
             this.state = new State(new Down());
         }
         this.queue = new LinkedList<DbRequest>();
+        _ = new MonitorThread(this);
     }
     
     private void Connect()
@@ -40,16 +42,6 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         session.CacheMode = CacheMode.Ignore;
         interceptedSession.CacheMode = CacheMode.Ignore;
         Console.WriteLine($"[NHIBERNATE SESSION '{configFileName}'] Connection established");
-    }
-
-    private void Close()
-    {        
-        session.Close();
-        session.SessionFactory.Close();
-        interceptedSession.Close();
-        interceptedSession.SessionFactory.Close();
-        this.state.nextState();
-        Console.WriteLine($"CURRENT STATE: {this.state.status()}");
     }
 
 
@@ -64,13 +56,12 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
             {
                 register(request);
                 Console.WriteLine($"DATABASE IS {this.state.status()}, REQUEST ADDED TO THE QUEUE: {queue.Count}");
-                reconnect();
+                // reconnect();
                 return;
             }
 
             Console.WriteLine($"EXECUTING REQUEST IN STATE: {this.state.status()}");
             
-
             session.BeginTransaction();
             switch (request.getType())
             {
@@ -100,7 +91,7 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
         catch(Exception exception)
         {
             Console.WriteLine("COULD NOT SEND REQUEST, DATABASE IS NOT ACTIVE");
-            Close();
+            // Close();
             register(request);
         }
     }
@@ -190,8 +181,50 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
     {
         return this.interceptedSession;
     }
-    
-    
+
+    public override void fix()
+    {
+        // If the session is not down, there is nothing to fix
+        if (this.state.status() != Status.DOWN) return;
+        CloseSession();
+        CloseInterceptedSession();
+        Connect();
+
+        if (isHealthy())
+        {
+            syncChanges();
+            this.state.nextState();
+        }
+
+    }
+
+    private void CloseSession()
+    {
+        if (session != null && session.IsOpen)
+        {
+            session.Close();
+            session.SessionFactory.Close();
+        }
+    }
+
+    private void CloseInterceptedSession()
+    {
+        if (interceptedSession != null && interceptedSession.IsOpen)
+        {
+            interceptedSession.Close();
+            interceptedSession.SessionFactory.Close();
+        }
+    }
+    // private void Close()
+    // {        
+    //     session.Close();
+    //     session.SessionFactory.Close();
+    //     interceptedSession.Close();
+    //     interceptedSession.SessionFactory.Close();
+    //     this.state.nextState();
+    //     Console.WriteLine($"CURRENT STATE: {this.state.status()}");
+    // }
+
     public void PrintObjectProperties(object obj)
     {
         Type type = obj.GetType();

@@ -20,4 +20,7 @@ public abstract class ManageableSession
     public abstract void markAsUnused();
     
     public abstract object getConnection();
+
+    public abstract void fix();
+
 }
