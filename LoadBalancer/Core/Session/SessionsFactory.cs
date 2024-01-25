@@ -1,11 +1,13 @@
+using NHibernate;
+
 namespace LoadBalancer.Core.Session;
 
 
 // DatabaseSessions factory
 public class SessionsFactory
 {
-    private LoadBalancer<DatabaseSession> loadBalancer;
-    public SessionsFactory(LoadBalancer<DatabaseSession> loadBalancer)
+    private LoadBalancer<DatabaseSession, ISession> loadBalancer;
+    public SessionsFactory(LoadBalancer<DatabaseSession, ISession> loadBalancer)
     {
         this.loadBalancer = loadBalancer;
     }

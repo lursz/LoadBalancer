@@ -34,6 +34,14 @@ services:
       POSTGRES_USER: user3
       POSTGRES_PASSWORD: password3
 
+  redis:
+    image: "redis:latest"
+    container_name: my-redis-container
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+
   #   # 4
   # postgres4:
   #   image: postgres

@@ -7,9 +7,9 @@ namespace LoadBalancer.Core.Session;
 
 public class LoadBalancerInterceptor : EmptyInterceptor
 {
-    protected readonly LoadBalancer<DatabaseSession> _loadBalancer;
+    protected readonly LoadBalancer<DatabaseSession, ISession> _loadBalancer;
 
-    public LoadBalancerInterceptor(LoadBalancer<DatabaseSession> loadBalancer)
+    public LoadBalancerInterceptor(LoadBalancer<DatabaseSession, ISession> loadBalancer)
     {
         _loadBalancer = loadBalancer;
     }
@@ -20,7 +20,7 @@ public class LoadBalancerInterceptor : EmptyInterceptor
         {
             Console.WriteLine("[INTERCEPTOR] ON SAVE INTERCEPTOR");
             Console.WriteLine(entity);
-            _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.INSERT));
+            _loadBalancer.Redirect(new DbRequest(entity, DbRequest.Type.INSERT));
         }
         catch (Exception e)
         {
@@ -33,7 +33,7 @@ public class LoadBalancerInterceptor : EmptyInterceptor
         try
         {
             Console.WriteLine("[INTERCEPTOR] DELETE INTERCEPTOR");
-            _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.DELETE));
+            _loadBalancer.Redirect(new DbRequest(entity, DbRequest.Type.DELETE));
 
         }
         catch (Exception e)
@@ -49,7 +49,7 @@ public class LoadBalancerInterceptor : EmptyInterceptor
         try
         {
             Console.WriteLine("[INTERCEPTOR] FLUSH DIRTY INTERCEPTOR");
-            _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.UPDATE));
+            _loadBalancer.Redirect(new DbRequest(entity, DbRequest.Type.UPDATE));
         }
         catch (Exception e)
         {
@@ -62,7 +62,7 @@ public class LoadBalancerInterceptor : EmptyInterceptor
     public override bool OnLoad(object entity, object id, object[] state, string[] propertyNames, IType[] types)
     {   
         // Console.WriteLine("LOAD INTERCEPTOR");
-        _loadBalancer.redirect(new DbRequest(entity, DbRequest.Type.SELECT));
+        _loadBalancer.Redirect(new DbRequest(entity, DbRequest.Type.SELECT));
         return false;
     }
     

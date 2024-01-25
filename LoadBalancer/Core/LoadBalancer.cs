@@ -1,36 +1,108 @@
+#nullable enable
 using LoadBalancer.Abstracts;
+using NHibernate;
 
 namespace LoadBalancer.Core;
 
-public class LoadBalancer<Session>()
-    where Session : ManageableSession
+public class LoadBalancer<DBSession, Session>()
+    where DBSession : ManageableSession
+    where Session : ISession
 {
-    private Session[] sessions;
+    private DBSession[] sessions;
 
-    private Session mainSession;
+    private DBSession? mainSession;
 
-    private ILoadBalanceAlgorithm<Session> loadBalancerAlgorithm;
+    private ILoadBalanceAlgorithm<DBSession> loadBalancerAlgorithm;
 
-    public void injectSessions(Session[] sessions)
+    public void InjectSessions(DBSession[] sessions)
     {
         this.sessions = sessions;
     }
 
-    public LoadBalancer(ILoadBalanceAlgorithm<Session> loadBalancerAlgorithm) :this()
+    public LoadBalancer(ILoadBalanceAlgorithm<DBSession> loadBalancerAlgorithm) :this()
     {
         this.loadBalancerAlgorithm = loadBalancerAlgorithm;
     }
 
-    public void changeLoadBalanceAlgorithm(ILoadBalanceAlgorithm<Session> loadBalancerAlgorithm)
+    public void ChangeLoadBalanceAlgorithm(ILoadBalanceAlgorithm<DBSession> loadBalancerAlgorithm)
     {
         this.loadBalancerAlgorithm = loadBalancerAlgorithm;
     }
 
-
-
-    public void redirect(DbRequest request) 
+    public void Insert(object objectToInsert)
     {
-        validateSessions();
+        Session? session = Connection();
+
+        if (session == null) 
+        {
+            StoreRequestsInAllSessions(new DbRequest(objectToInsert, DbRequest.Type.INSERT));
+            return;
+        }
+
+        session.BeginTransaction();
+        session.Save(objectToInsert);
+        session.GetCurrentTransaction().Commit();
+        session.Flush();
+        session.Clear();
+        session.Evict(objectToInsert);
+        Console.WriteLine("Added new user");
+    }
+
+    public void Update(object userToUpdate)
+    {
+        Session? session = Connection();
+
+        if (session == null) 
+        {
+            StoreRequestsInAllSessions(new DbRequest(userToUpdate, DbRequest.Type.UPDATE));
+            return;
+        }
+
+        session.BeginTransaction();
+        session.Update(userToUpdate);
+        session.GetCurrentTransaction().Commit();
+        session.Flush();
+        session.Clear();
+        session.Evict(userToUpdate);
+        Console.WriteLine("Updated user");
+    }
+    
+
+    public void Delete(object objectToDelete)
+    {
+        Session? session = Connection();
+
+        if (session == null) 
+        {
+            StoreRequestsInAllSessions(new DbRequest(objectToDelete, DbRequest.Type.DELETE));
+            return;
+        }
+
+        session.BeginTransaction();
+        session.Delete(objectToDelete);
+        session.GetCurrentTransaction().Commit();
+        session.Flush();
+        session.Clear();
+        session.Evict(objectToDelete);
+        Console.WriteLine("Removed user");
+    }   
+
+    public T Select<T>(int id)
+    {
+        Session? session = Connection();
+
+        if (session == null) 
+        {
+            throw new Exception("No session available");
+        }
+
+        T selectedUser = session.Get<T>(id);
+        return selectedUser;
+    }
+
+    public void Redirect(DbRequest request) 
+    {
+        ValidateSessions();
 
         // Console.WriteLine($"[LOAD BALANCER] Redirecting request: {request}");
 
@@ -46,21 +118,34 @@ public class LoadBalancer<Session>()
         }
     }
 
-    public T connection<T>() where T : class
+    public Session? Connection()
     {
-        validateSessions();
+        ValidateSessions();
         
         if (mainSession != null)
         {
             mainSession.markAsUnused();
         }
-        mainSession = loadBalancerAlgorithm.chooseSession(this.sessions);
+        mainSession = loadBalancerAlgorithm.ChooseSession(sessions);
+
+        if (mainSession == null) return default(Session);
         // mainSession.getConnection();
         mainSession.markAsUsed();
-        return mainSession.getConnection() as T;
+        return (Session)mainSession.getConnection();
     }
 
-    private void validateSessions()
+    private void StoreRequestsInAllSessions(DbRequest request)
+    {
+        foreach (var session in this.sessions)
+        {
+            try {
+                session.storeObject(request);
+            } catch (Exception e) {
+                Console.WriteLine(e);
+            }
+        }
+    }
+    private void ValidateSessions()
     {
         if (this.sessions == null || this.sessions.Length == 0)
         {

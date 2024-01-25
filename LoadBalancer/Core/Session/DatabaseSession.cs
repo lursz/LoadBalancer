@@ -47,6 +47,8 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
 
     public override void execute(DbRequest request)
     {
+
+        Console.WriteLine($"REQUEST OBJECT: {request.getObject()}");
         try
         {
             // Do nothing on SELECT
@@ -165,6 +167,11 @@ public class DatabaseSession : ManageableSession, IUnitOfWork
             // Console.WriteLine(e);
             return false;
         }
+    }
+
+    public override void storeObject(DbRequest request)
+    {
+        this.queue.AddLast(request);
     }
 
     public override void markAsUsed()

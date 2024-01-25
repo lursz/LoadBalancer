@@ -1,10 +1,11 @@
+
 using LoadBalancer.Abstracts;
 
 namespace LoadBalancer.Core.LoadBalanceAlgorithms;
 
 public class Random<Session> : ILoadBalanceAlgorithm<Session> where Session : ManageableSession
 {
-    public Session chooseSession(Session[] sessions)
+    public Session? ChooseSession(Session[] sessions)
     {
         if (sessions.Length == 0)
             throw new InvalidOperationException("Random: Cannot choose a session. Please check your configuration.");
@@ -17,6 +18,8 @@ public class Random<Session> : ILoadBalanceAlgorithm<Session> where Session : Ma
                 Console.WriteLine($"Random: Chosen session: {index}");
                 return session;
         }
+
+        return null;
         throw new InvalidOperationException("Random: Failed to choose a suitable session.");
     }
 }

@@ -1,4 +1,5 @@
 using LoadBalancer.Core;
+using NHibernate;
 
 namespace LoadBalancer.Abstracts;
 
@@ -19,7 +20,9 @@ public abstract class ManageableSession
     
     public abstract void markAsUnused();
     
-    public abstract object getConnection();
+    public abstract ISession getConnection();
+
+    public abstract void storeObject(DbRequest obj);
 
     public abstract void fix();
 

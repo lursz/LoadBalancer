@@ -1,3 +1,4 @@
+
 using LoadBalancer.Abstracts;
 
 namespace LoadBalancer.Core.LoadBalanceAlgorithms;
@@ -6,7 +7,7 @@ public class RoundRobin<Session> : ILoadBalanceAlgorithm<Session> where Session 
 {
     private static int _prevIndex = -1;
 
-    public Session chooseSession(Session[] sessions)
+    public Session? ChooseSession(Session[] sessions)
     {
         if (sessions.Length == 0)
             throw new InvalidOperationException("Random: Cannot choose a session. Please check your configuration.");
@@ -27,6 +28,8 @@ public class RoundRobin<Session> : ILoadBalanceAlgorithm<Session> where Session 
                 return session;
             }
         }
+
+        return null;
         throw new InvalidOperationException("RoundRobin: Failed to choose a suitable session.");
     }
 }
