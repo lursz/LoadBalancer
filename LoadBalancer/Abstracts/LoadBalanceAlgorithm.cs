@@ -1,4 +1,4 @@
-             
+#nullable enable          
 using LoadBalancer.Core;
 
 namespace LoadBalancer.Abstracts;
