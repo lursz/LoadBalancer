@@ -62,6 +62,9 @@ internal static class Program
                             {
                                 Console.WriteLine($"{u.Id} {u.Name} {u.Email} {u.Sex}");
                             }
+                            session.Flush();
+                            session.Clear();
+     
                             break;
                         
                         case "3": // Insert
@@ -91,6 +94,9 @@ internal static class Program
                             string deleteId = Console.ReadLine();
                             var userToDelete = session.Get<User>(int.Parse(deleteId));
                             loadBalancer.Delete(userToDelete);
+                            session.Flush();
+                            session.Clear();
+    
                             break;
                         
                         case "6": // Update
@@ -102,6 +108,9 @@ internal static class Program
                             
                             userToUpdate.Name = userNewName;
                             loadBalancer.Update(userToUpdate);
+                            session.Flush();
+                            session.Clear();
+                            session.Evict(userToUpdate);
                             break;
                         
                         case "7": //Change LoadBalancing algorithm
