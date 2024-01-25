@@ -45,7 +45,6 @@ internal static class Program
                 try {
                     Console.WriteLine($" >> List of commands:\t 1 - Select\t 2 - List all users\t 3 - Insert\t 4 - Insert random user\t 5 - Delete\t 6 - Update\t 7 - Change LoadBalancing algorithm >> ");
                     string userInput = Console.ReadLine();
-                    ISession session = loadBalancer.Connection();
 
                     switch (userInput) 
                     {
@@ -57,13 +56,11 @@ internal static class Program
                             break;
                         
                         case "2": //List all users
-                            var allUsers = session.CreateQuery("from User").List<User>();
+                            var allUsers = loadBalancer.GetAllData<User>();
                             foreach (var u in allUsers)
                             {
                                 Console.WriteLine($"{u.Id} {u.Name} {u.Email} {u.Sex}");
                             }
-                            session.Flush();
-                            session.Clear();
      
                             break;
                         
@@ -92,25 +89,19 @@ internal static class Program
                         case "5": // Delete
                             Console.WriteLine("Enter ID to delete: ");
                             string deleteId = Console.ReadLine();
-                            var userToDelete = session.Get<User>(int.Parse(deleteId));
-                            loadBalancer.Delete(userToDelete);
-                            session.Flush();
-                            session.Clear();
-    
+                            var userToDelete = new User { Id = int.Parse(deleteId) };
+                            loadBalancer.Delete(userToDelete);    
                             break;
                         
                         case "6": // Update
                             Console.WriteLine("Enter ID to update: ");
                             string updateId = Console.ReadLine();
-                            var userToUpdate = session.Get<User>(int.Parse(updateId));
+                            var userToUpdate = new User { Id = int.Parse(updateId) };
                             Console.WriteLine("Enter new name: ");
                             var userNewName = Console.ReadLine();
                             
                             userToUpdate.Name = userNewName;
                             loadBalancer.Update(userToUpdate);
-                            session.Flush();
-                            session.Clear();
-                            session.Evict(userToUpdate);
                             break;
                         
                         case "7": //Change LoadBalancing algorithm

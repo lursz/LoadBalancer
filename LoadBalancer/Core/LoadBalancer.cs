@@ -29,6 +29,16 @@ public class LoadBalancer<DBSession, Session>()
         this.loadBalancerAlgorithm = loadBalancerAlgorithm;
     }
 
+    public List<T> GetAllData<T>()
+    {   
+        Session? session = Connection();
+        if (session == null) {
+            throw new Exception("No session available");
+        }
+        var allData = session.CreateQuery("from User").List<T>();
+        return (List<T>)allData;
+    }
+
     public void Insert(object objectToInsert)
     {
         Session? session = Connection();
