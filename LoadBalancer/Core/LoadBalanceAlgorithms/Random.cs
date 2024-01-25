@@ -6,6 +6,8 @@ public class Random<Session> : ILoadBalanceAlgorithm<Session> where Session : Ma
 {
     public Session chooseSession(Session[] sessions)
     {
+        if (sessions.Length == 0)
+            throw new InvalidOperationException("Random: Cannot choose a session. Please check your configuration.");
         var randomIndex = new System.Random().Next(0, sessions.Length);
         for (var i = 0; i < sessions.Length; i++)
         {

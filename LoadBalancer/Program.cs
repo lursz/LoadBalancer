@@ -22,7 +22,7 @@ internal static class Program
             {
                 "./Configs/config1.cfg.xml",
                 "./Configs/config2.cfg.xml",
-                // "./Configs/config3.cfg.xml",
+                "./Configs/config3.cfg.xml",
             };
 
             try {

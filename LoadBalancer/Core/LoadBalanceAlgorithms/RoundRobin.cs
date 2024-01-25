@@ -8,6 +8,8 @@ public class RoundRobin<Session> : ILoadBalanceAlgorithm<Session> where Session 
 
     public Session chooseSession(Session[] sessions)
     {
+        if (sessions.Length == 0)
+            throw new InvalidOperationException("Random: Cannot choose a session. Please check your configuration.");
         for (var i = 0; i < sessions.Length; i++)
         {
             int currentIndex = (_prevIndex + 1 + i) % sessions.Length;
