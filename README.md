@@ -35,18 +35,18 @@ Presented below is the initialization flow (to help understand the order of oper
 
 # Used Design Patterns
 During the development of this project we have used the following design patterns:
-- [Factory method](https://en.wikipedia.org/wiki/Factory_method_pattern)
+#### [Factory method](https://refactoring.guru/design-patterns/factory-method)
 ![factory3](https://github.com/lursz/LoadBalancer/assets/93160829/3f1314ff-250f-474f-a5ae-be1f5c339dde)
 
-- [State](https://en.wikipedia.org/wiki/State_pattern)
+#### [State](https://refactoring.guru/design-patterns/state)
 ![state0](https://github.com/lursz/LoadBalancer/assets/93160829/34ace22a-7f64-43ac-b0c3-83d76946a499)
 
 
-- [Strategy](https://en.wikipedia.org/wiki/Strategy_pattern)
+#### [Strategy](https://refactoring.guru/design-patterns/strategy)
 ![strategy1](https://github.com/lursz/LoadBalancer/assets/93160829/98530907-16b0-4c5a-9f3f-f8788e967220)
 
 
-- [Unit of work](https://en.wikipedia.org/wiki/Unit_of_work)
+#### [Unit of work](https://en.wikipedia.org/wiki/Unit_of_work)
 ![unit_of_work](https://github.com/lursz/LoadBalancer/assets/93160829/9c390684-09f6-4561-b3d6-432930a97170)
 
 
