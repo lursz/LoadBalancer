@@ -2,10 +2,15 @@ namespace LoadBalancer.Core;
 
 public enum Status { UP, DOWN, SYNC }
 
-public class State(IState state)
+public class State
 {
-    private IState _state = state;
-    
+    private IState _state;
+
+    public State(IState state)
+    {
+        _state = state;
+    }
+
     public Status status()
     {
         return _state.status();

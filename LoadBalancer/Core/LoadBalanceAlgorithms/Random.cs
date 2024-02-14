@@ -13,9 +13,9 @@ public class Random<Session> : ILoadBalanceAlgorithm<Session> where Session : Ma
         {
             var index = (i + randomIndex) % sessions.Length;
             var session = sessions[index];
-            if (session.state.status() == Status.UP && session.isUsed == false)
-                Console.WriteLine($"Random: Chosen session: {index}");
-                return session;
+            if (session.state.status() != Status.UP || session.isUsed != false) continue;
+            Console.WriteLine($"Random: Chosen session: {index}");
+            return session;
         }
         throw new InvalidOperationException("Random: Failed to choose a suitable session.");
     }

@@ -1,19 +1,18 @@
 using System;
-using JetBrains.Annotations;
 using LoadBalancer.Abstracts;
+using LoadBalancer.Core;
 using LoadBalancer.Core.LoadBalanceAlgorithms;
 using LoadBalancer.Core.Session;
-using LoadBalancer.Core;
 using Xunit;
 
 namespace LoadBalancer.Tests.Core.LoadBalanceAlgorithms;
 
-public class RoundRobinTest : IDisposable
+public class RandomTest : IDisposable
 {
-    ILoadBalanceAlgorithm<DatabaseSession> loadBalanceAlgorithm = new RoundRobin<DatabaseSession>();
+    ILoadBalanceAlgorithm<DatabaseSession> loadBalanceAlgorithm = new Random<DatabaseSession>();
     DatabaseSession[] sessions;
     
-    public RoundRobinTest()
+    public RandomTest()
     {
         LoadBalancer<DatabaseSession> loadBalancer = new(loadBalanceAlgorithm);
         SessionsFactory sessionsFactory = new SessionsFactory(loadBalancer);
@@ -26,23 +25,17 @@ public class RoundRobinTest : IDisposable
         };
         
         sessions = sessionsFactory.createSessions(configFileNames);
-        // foreach (var session in sessions)
-        // {
-        //     session.markAsUnused();
-        //     session.state = new State(new Up());
-        // }
+        loadBalancer.injectSessions(sessions);
+
     }
 
     [Fact]
     public void testChooseSession()
     {
-        int testRange = 10;
-        for (var i = 0; i < testRange; i++)
-        {
-            var chosenSession = loadBalanceAlgorithm.chooseSession(sessions);
-            Assert.NotNull(chosenSession);
-            Assert.Equal(sessions[i % sessions.Length], chosenSession);
-        }
+                
+        var chosenSession = loadBalanceAlgorithm.chooseSession(sessions);
+        Assert.NotNull(chosenSession);
+        
     }
 
     public void Dispose(){}

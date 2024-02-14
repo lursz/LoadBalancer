@@ -12,7 +12,6 @@ internal static class Program
     {
         try
         {
-
             Abstracts.ILoadBalanceAlgorithm<DatabaseSession> loadBalanceAlgorithm = new Core.LoadBalanceAlgorithms.RoundRobin<DatabaseSession>();
             LoadBalancer<DatabaseSession> loadBalancer = new(loadBalanceAlgorithm);
 
@@ -25,7 +24,8 @@ internal static class Program
                 "./Configs/config3.cfg.xml",
             };
 
-            try {
+            try 
+            {
                 Migration migration = new(configFileNames);
                 migration.DropAndMigrateAll();
                 migration.MigrateAll();
