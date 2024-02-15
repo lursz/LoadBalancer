@@ -17,7 +17,8 @@ public class RoundRobin<Session> : ILoadBalanceAlgorithm<Session> where Session 
 
             if (session.state.status() == Status.UP && session.isUsed == false)
             {
-                if (!session.isHealthy()) {
+                if (!session.isHealthy()) 
+                {
                     Console.WriteLine($"Session {currentIndex} is unhealthy, skipping...");
                     continue;
                 }

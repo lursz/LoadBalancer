@@ -22,7 +22,7 @@ public class State
     
 }
 
-class Up : IState
+public class Up : IState
 {
     public Status status()
     {
@@ -34,7 +34,7 @@ class Up : IState
     }
 }
 
-class Down : IState
+public class Down : IState
 {
     public Status status()
     {
@@ -46,7 +46,7 @@ class Down : IState
     }
 }
 
-class Sync : IState
+public class Sync : IState
 {
     public Status status()
     {

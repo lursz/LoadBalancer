@@ -1,9 +1,9 @@
+using Xunit;
 using System;
 using LoadBalancer.Abstracts;
 using LoadBalancer.Core;
 using LoadBalancer.Core.LoadBalanceAlgorithms;
 using LoadBalancer.Core.Session;
-using Xunit;
 
 namespace LoadBalancer.Tests.Core.LoadBalanceAlgorithms;
 
@@ -14,29 +14,61 @@ public class RandomTest : IDisposable
     
     public RandomTest()
     {
-        LoadBalancer<DatabaseSession> loadBalancer = new(loadBalanceAlgorithm);
-        SessionsFactory sessionsFactory = new SessionsFactory(loadBalancer);
         
+        LoadBalancer<DatabaseSession> loadBalancer = new LoadBalancer<DatabaseSession>(loadBalanceAlgorithm);
+        SessionsFactory sessionsFactory = new SessionsFactory(loadBalancer);
+
         string[] configFileNames =
-        {
+        [
             "./Configs/config1.cfg.xml",
             "./Configs/config2.cfg.xml",
-            "./Configs/config3.cfg.xml",
-        };
-        
+            "./Configs/config3.cfg.xml"
+        ];
+
         sessions = sessionsFactory.createSessions(configFileNames);
-        loadBalancer.injectSessions(sessions);
 
     }
 
     [Fact]
     public void testChooseSession()
     {
-                
-        var chosenSession = loadBalanceAlgorithm.chooseSession(sessions);
+        foreach (var session in sessions)
+        {
+            session.markAsUnused();
+            session.state = new State(new Up());
+        }
+        var chosenSession = this.loadBalanceAlgorithm.chooseSession(sessions);
         Assert.NotNull(chosenSession);
         
     }
+    
+    [Fact]
+    public void testChooseSessionWithNoSessions()
+    {
+        DatabaseSession[] emptySessions = Array.Empty<DatabaseSession>();
+        Assert.Throws<InvalidOperationException>(() => this.loadBalanceAlgorithm.chooseSession(emptySessions));
+    }
+    
+    [Fact]
+    public void testChooseSessionWithAllSessionsDown()
+    {
+        foreach (var session in sessions)
+        {
+            session.state = new State(new Down());
+        }
+        Assert.Throws<InvalidOperationException>(() => this.loadBalanceAlgorithm.chooseSession(sessions));
+    }
+    
+    [Fact]
+    public void testChooseSessionWithAllSessionsUsed()
+    {
+        foreach (var session in sessions)
+        {
+            session.markAsUsed();
+        }
+        Assert.Throws<InvalidOperationException>(() => this.loadBalanceAlgorithm.chooseSession(sessions));
+    }
+    
 
     public void Dispose(){}
 }
