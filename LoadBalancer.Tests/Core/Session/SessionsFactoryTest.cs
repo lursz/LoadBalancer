@@ -9,7 +9,7 @@ namespace LoadBalancer.Tests.Core.Session;
 
 public class SessionsFactoryTest : IDisposable
 {
-    LoadBalancer<DatabaseSession> loadBalancer = new LoadBalancer<DatabaseSession>(new RoundRobin<DatabaseSession>());
+    private LoadBalancer<DatabaseSession> loadBalancer = new LoadBalancer<DatabaseSession>(new RoundRobin<DatabaseSession>());
     private string[] configFileNames;
     
     public SessionsFactoryTest()
